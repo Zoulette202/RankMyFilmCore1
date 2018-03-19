@@ -5,6 +5,11 @@
     <UserSecretsId>aspnet-RankMyFilmCore-BFFCED68-54F0-418C-A6E5-59491CB16179</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20180319132104_booleanVu.cs" />
+    <Compile Remove="Data\Migrations\20180319132104_booleanVu.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
