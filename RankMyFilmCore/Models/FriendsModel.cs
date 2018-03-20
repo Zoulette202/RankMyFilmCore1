@@ -11,17 +11,15 @@ namespace RankMyFilmCore
     {
 
         [Display(Name = "idFriends")]
-        [StringLength(50)]
         public int idFriends { get; set; }
 
-        [Display(Name = "idUserFirst")]
-        [StringLength(50)]
-        public int idUserFirst { get; set; }
+        [Display(Name = "idSuiveur")]
+        public int idSuiveur { get; set; }
 
         
-        [Display(Name = "idUserSecond")]
+        [Display(Name = "idSuivi")]
         [StringLength(50)]
-        public int idUserSecond { get; set; }
+        public int idSuivi { get; set; }
 
     }
 }
