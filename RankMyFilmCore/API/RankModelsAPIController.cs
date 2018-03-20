@@ -11,25 +11,25 @@ using RankMyFilmCore.Data;
 namespace RankMyFilmCore.WebApiRank
 {
     [Produces("application/json")]
-    [Route("api/RankModels")]
-    public class RankModelsController : Controller
+    [Route("api/Rank")]
+    public class RankModelsAPIController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public RankModelsController(ApplicationDbContext context)
+        public RankModelsAPIController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/RankModels
+        // GET: api/Rank
         [HttpGet]
         public IEnumerable<RankModel> GetrankModel()
         {
             return _context.rankModel;
         }
 
-        // GET: api/RankModels/5
-        [HttpGet("{id}")]
+        // GET: api/Rank/get/5
+        [HttpGet("get/{id}")]
         public async Task<IActionResult> GetRankModel([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
@@ -47,7 +47,7 @@ namespace RankMyFilmCore.WebApiRank
             return Ok(rankModel);
         }
 
-        // PUT: api/RankModels/5
+        // PUT: api/Rank/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRankModel([FromRoute] Guid id, [FromBody] RankModel rankModel)
         {
@@ -82,7 +82,7 @@ namespace RankMyFilmCore.WebApiRank
             return NoContent();
         }
 
-        // POST: api/RankModels
+        // POST: api/Rank
         [HttpPost]
         public async Task<IActionResult> PostRankModel([FromBody] RankModel rankModel)
         {
@@ -97,8 +97,40 @@ namespace RankMyFilmCore.WebApiRank
             return CreatedAtAction("GetRankModel", new { id = rankModel.ID }, rankModel);
         }
 
-        // DELETE: api/RankModels/5
-        [HttpDelete("{id}")]
+        [HttpGet("createRank/{idUser}/{idFilms}/{vote}")]
+        public async Task<IActionResult> PostRankModelByIdUserIdFilm(int idUser, int idFilms, int vote)
+        {
+
+            var rank = new RankModel { idUser = idUser, idFilm = idFilms, Vote = vote };
+            _context.rankModel.Add(rank);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetRankModel", new { id = rank.ID }, rank);
+        }
+
+
+
+
+        [HttpGet("GetRankModelByUserAndFilms/{idUser}/{idFilms}")]
+        public async Task<IActionResult> GetRankModelByUserAndFilms(int idUser, int idFilms)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var rankModel = from rankModels in _context.rankModel
+                            where rankModels.idUser == idUser && rankModels.idFilm == idFilms
+                            select rankModels;
+            if (rankModel == null)
+            {
+                return NotFound();
+            }
+            return Ok(rankModel);
+        }
+
+
+        // DELETE: api/Rank/delete/5
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteRankModel([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)

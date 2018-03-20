@@ -29,7 +29,8 @@ namespace RankMyFilmCore.Controllers
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
-            ILogger<AccountController> logger)
+            ILogger<AccountController> logger
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;

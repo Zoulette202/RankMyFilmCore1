@@ -8,6 +8,8 @@
   <ItemGroup>
     <Compile Remove="Data\Migrations\20180319132104_booleanVu.cs" />
     <Compile Remove="Data\Migrations\20180319132104_booleanVu.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180320174613_idUseridFilmString.cs" />
+    <Compile Remove="Data\Migrations\20180320174613_idUseridFilmString.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

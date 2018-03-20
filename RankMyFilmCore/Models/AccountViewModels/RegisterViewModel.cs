@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace RankMyFilmCore.Models.AccountViewModels
 {
-    public class RegisterViewModel
-    {
+    public class RegisterViewModel : ModelBase
+    { 
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
