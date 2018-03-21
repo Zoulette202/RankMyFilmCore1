@@ -98,21 +98,49 @@ namespace RankMyFilmCore.WebApiRank
         }
 
         [HttpGet("createRank/{idUser}/{idFilms}/{vote}")]
-        public async Task<IActionResult> PostRankModelByIdUserIdFilm(int idUser, int idFilms, int vote)
+        public async Task<IActionResult> PostRankModelByIdUserIdFilm(Guid idUser, Guid idFilms, int vote)
         {
 
-            var rank = new RankModel { idUser = idUser, idFilm = idFilms, Vote = vote };
-            _context.rankModel.Add(rank);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetRankModel", new { id = rank.ID }, rank);
+            var rankModel = await _context.rankModel.SingleOrDefaultAsync(m => m.idUser == idUser && m.idFilm == idFilms);
+
+            if (rankModel == null)
+            {
+                var rank = new RankModel { idUser = idUser, idFilm = idFilms, Vote = vote };
+                _context.rankModel.Add(rank);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetRankModel", new { id = rank.ID }, rank);
+            }
+            else
+            {
+                rankModel.Vote = vote;
+                _context.Entry(rankModel).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!RankModelExists(rankModel.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            return CreatedAtAction("GetRankModel", new { id = rankModel.ID }, rankModel);
         }
 
 
 
 
         [HttpGet("GetRankModelByUserAndFilms/{idUser}/{idFilms}")]
-        public async Task<IActionResult> GetRankModelByUserAndFilms(int idUser, int idFilms)
+        public async Task<IActionResult> GetRankModelByUserAndFilms(Guid idUser, Guid idFilms)
         {
             if (!ModelState.IsValid)
             {

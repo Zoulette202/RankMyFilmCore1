@@ -33,6 +33,7 @@ namespace RankMyFilmCore
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddCors();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -88,7 +89,7 @@ namespace RankMyFilmCore
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            app.UseCors(builder =>  builder.WithOrigins("http://rankmyfilmcore.azurewebsites.net"));
             app.UseStaticFiles();
 
             app.UseAuthentication();

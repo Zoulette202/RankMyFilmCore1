@@ -11,9 +11,10 @@ using System;
 namespace RankMyFilmCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180321105416_idUserFilmRankString")]
+    partial class idUserFilmRankString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,12 +212,7 @@ namespace RankMyFilmCore.Data.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
-                    b.Property<Guid>("guid")
-                        .ValueGeneratedOnAdd();
-
                     b.HasKey("Id");
-
-                    b.HasAlternateKey("guid");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -231,9 +227,8 @@ namespace RankMyFilmCore.Data.Migrations
 
             modelBuilder.Entity("RankMyFilmCore.RankModel", b =>
                 {
-                    b.Property<Guid>("idUser");
-
-                    b.Property<Guid>("idFilm");
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Commentaire")
                         .HasMaxLength(255);
@@ -242,19 +237,18 @@ namespace RankMyFilmCore.Data.Migrations
 
                     b.Property<DateTime?>("DeletedAt");
 
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd();
-
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<int>("Vote");
 
+                    b.Property<string>("idFilm");
+
+                    b.Property<string>("idUser");
+
                     b.Property<bool>("vu");
 
-                    b.HasKey("idUser", "idFilm");
-
-                    b.HasAlternateKey("ID");
+                    b.HasKey("ID");
 
                     b.ToTable("rankModel");
                 });
@@ -284,7 +278,9 @@ namespace RankMyFilmCore.Data.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("userModel");
                 });
@@ -337,8 +333,8 @@ namespace RankMyFilmCore.Data.Migrations
             modelBuilder.Entity("RankMyFilmCore.UserModel", b =>
                 {
                     b.HasOne("RankMyFilmCore.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithOne("User")
+                        .HasForeignKey("RankMyFilmCore.UserModel", "UserId");
                 });
 #pragma warning restore 612, 618
         }

@@ -10,6 +10,40 @@
     <Compile Remove="Data\Migrations\20180319132104_booleanVu.Designer.cs" />
     <Compile Remove="Data\Migrations\20180320174613_idUseridFilmString.cs" />
     <Compile Remove="Data\Migrations\20180320174613_idUseridFilmString.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321093357_idUserFilmStringPrimaryKey.cs" />
+    <Compile Remove="Data\Migrations\20180321093357_idUserFilmStringPrimaryKey.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321093837_idUserFilmStringPrimaryKey.cs" />
+    <Compile Remove="Data\Migrations\20180321093837_idUserFilmStringPrimaryKey.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321094500_idUserFilmStringPrimaryKey.cs" />
+    <Compile Remove="Data\Migrations\20180321094500_idUserFilmStringPrimaryKey.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321094933_idUserFilmStringPrimaryKey.cs" />
+    <Compile Remove="Data\Migrations\20180321094933_idUserFilmStringPrimaryKey.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321095304_idUserFilmStringPrimaryKey.cs" />
+    <Compile Remove="Data\Migrations\20180321095304_idUserFilmStringPrimaryKey.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321100759_idUserFilmStringPrimaryKey.cs" />
+    <Compile Remove="Data\Migrations\20180321100759_idUserFilmStringPrimaryKey.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321101235_idUserFilmStringPrimaryKey.cs" />
+    <Compile Remove="Data\Migrations\20180321101235_idUserFilmStringPrimaryKey.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321102218_idUserFilmStringPrimaryKey.cs" />
+    <Compile Remove="Data\Migrations\20180321102218_idUserFilmStringPrimaryKey.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321102453_idUserFilmStringPrimaryKey.cs" />
+    <Compile Remove="Data\Migrations\20180321102453_idUserFilmStringPrimaryKey.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321102913_idUserFilmStringPrimaryKey.cs" />
+    <Compile Remove="Data\Migrations\20180321102913_idUserFilmStringPrimaryKey.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321103006_idUserFilmStringPrimaryKey.cs" />
+    <Compile Remove="Data\Migrations\20180321103006_idUserFilmStringPrimaryKey.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321103305_idUserFilmStringPrimaryKey2.cs" />
+    <Compile Remove="Data\Migrations\20180321103305_idUserFilmStringPrimaryKey2.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321103401_idUserFilmStringPrimaryKey2.cs" />
+    <Compile Remove="Data\Migrations\20180321103401_idUserFilmStringPrimaryKey2.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321104427_idUserFilmPrimaryKeyGuid.cs" />
+    <Compile Remove="Data\Migrations\20180321104427_idUserFilmPrimaryKeyGuid.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321104652_idUserFilmPrimaryKeyString.cs" />
+    <Compile Remove="Data\Migrations\20180321104652_idUserFilmPrimaryKeyString.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321105040_RankModelPrimaryKeyGuid.cs" />
+    <Compile Remove="Data\Migrations\20180321105040_RankModelPrimaryKeyGuid.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321114440_idGuidAspNetUsers.cs" />
+    <Compile Remove="Data\Migrations\20180321114440_idGuidAspNetUsers.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

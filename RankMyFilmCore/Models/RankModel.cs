@@ -9,13 +9,15 @@ namespace RankMyFilmCore
 {
     public class RankModel : ModelBase
     {
+        
         [Display(Name = "Utilisateur")]
         [ForeignKey("User")]
-        public int idUser { get; set; }
+        public Guid idUser { get; set; }
 
+        
         [Display(Name = "Film")]
         [ForeignKey("Film")]
-        public int idFilm { get; set; }
+        public Guid idFilm { get; set; }
 
 
         [Display(Name = "Vote")]
