@@ -33,7 +33,14 @@ namespace RankMyFilmCore
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddCors();
+            // j'ai add ça pour les requête multiorigines (Cross-Origin Request)
+            services.AddCors(option => {
+                option.AddPolicy("CorsPolicy",
+                builder => builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+             });
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -89,9 +96,11 @@ namespace RankMyFilmCore
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            app.UseCors(builder =>  builder.WithOrigins("http://rankmyfilmcore.azurewebsites.net"));
+            app.UseCors("CorsPolicy");
             app.UseStaticFiles();
 
+
+            //J'ai add ça pour l'authentification avec Identity
             app.UseAuthentication();
 
             app.UseMvc(routes =>

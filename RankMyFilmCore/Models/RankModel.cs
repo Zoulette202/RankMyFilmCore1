@@ -17,10 +17,11 @@ namespace RankMyFilmCore
         
         [Display(Name = "Film")]
         [ForeignKey("Film")]
-        public Guid idFilm { get; set; }
+        public string idFilm { get; set; }
 
 
-        [Display(Name = "Vote")]
+        [Display(Name = "Note")]
+        [Range(0.00,5.00, ErrorMessage ="La note doit être entre {1} et {2}")]
         public int Vote { get; set; }
 
         [Display(Name = "Déjà vu")]

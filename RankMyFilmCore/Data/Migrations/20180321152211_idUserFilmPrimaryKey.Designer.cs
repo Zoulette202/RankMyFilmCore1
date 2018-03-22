@@ -11,8 +11,8 @@ using System;
 namespace RankMyFilmCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180321105530_idUserFilmPrimaryKeyGuid")]
-    partial class idUserFilmPrimaryKeyGuid
+    [Migration("20180321152211_idUserFilmPrimaryKey")]
+    partial class idUserFilmPrimaryKey
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -212,7 +212,12 @@ namespace RankMyFilmCore.Data.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
+                    b.Property<Guid>("guid")
+                        .ValueGeneratedOnAdd();
+
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("guid");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -229,7 +234,7 @@ namespace RankMyFilmCore.Data.Migrations
                 {
                     b.Property<Guid>("idUser");
 
-                    b.Property<Guid>("idFilm");
+                    b.Property<string>("idFilm");
 
                     b.Property<string>("Commentaire")
                         .HasMaxLength(255);
@@ -280,9 +285,7 @@ namespace RankMyFilmCore.Data.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
+                    b.HasIndex("UserId");
 
                     b.ToTable("userModel");
                 });
@@ -335,8 +338,8 @@ namespace RankMyFilmCore.Data.Migrations
             modelBuilder.Entity("RankMyFilmCore.UserModel", b =>
                 {
                     b.HasOne("RankMyFilmCore.Models.ApplicationUser", "User")
-                        .WithOne("User")
-                        .HasForeignKey("RankMyFilmCore.UserModel", "UserId");
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

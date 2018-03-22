@@ -233,7 +233,7 @@ namespace RankMyFilmCore.Data.Migrations
                 {
                     b.Property<Guid>("idUser");
 
-                    b.Property<Guid>("idFilm");
+                    b.Property<string>("idFilm");
 
                     b.Property<string>("Commentaire")
                         .HasMaxLength(255);

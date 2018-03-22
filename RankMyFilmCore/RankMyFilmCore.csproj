@@ -42,8 +42,14 @@
     <Compile Remove="Data\Migrations\20180321104652_idUserFilmPrimaryKeyString.Designer.cs" />
     <Compile Remove="Data\Migrations\20180321105040_RankModelPrimaryKeyGuid.cs" />
     <Compile Remove="Data\Migrations\20180321105040_RankModelPrimaryKeyGuid.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321105530_idUserFilmPrimaryKeyGuid.cs" />
+    <Compile Remove="Data\Migrations\20180321105530_idUserFilmPrimaryKeyGuid.Designer.cs" />
     <Compile Remove="Data\Migrations\20180321114440_idGuidAspNetUsers.cs" />
     <Compile Remove="Data\Migrations\20180321114440_idGuidAspNetUsers.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321114605_idGuidAspNetUsers.cs" />
+    <Compile Remove="Data\Migrations\20180321114605_idGuidAspNetUsers.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180321151752_idFilmRankString.cs" />
+    <Compile Remove="Data\Migrations\20180321151752_idFilmRankString.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

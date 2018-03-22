@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,11 @@ namespace RankMyFilmCore.WebApiRank
 {
     [Produces("application/json")]
     [Route("api/Rank")]
+    [EnableCors("CorsPolicy")]
     public class RankModelsAPIController : Controller
     {
         private readonly ApplicationDbContext _context;
-
+        
         public RankModelsAPIController(ApplicationDbContext context)
         {
             _context = context;
@@ -98,7 +100,7 @@ namespace RankMyFilmCore.WebApiRank
         }
 
         [HttpGet("createRank/{idUser}/{idFilms}/{vote}")]
-        public async Task<IActionResult> PostRankModelByIdUserIdFilm(Guid idUser, Guid idFilms, int vote)
+        public async Task<IActionResult> PostRankModelByIdUserIdFilm(Guid idUser, string idFilms, int vote)
         {
 
 
@@ -140,7 +142,7 @@ namespace RankMyFilmCore.WebApiRank
 
 
         [HttpGet("GetRankModelByUserAndFilms/{idUser}/{idFilms}")]
-        public async Task<IActionResult> GetRankModelByUserAndFilms(Guid idUser, Guid idFilms)
+        public async Task<IActionResult> GetRankModelByUserAndFilms(Guid idUser, string idFilms)
         {
             if (!ModelState.IsValid)
             {
