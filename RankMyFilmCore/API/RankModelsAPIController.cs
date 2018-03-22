@@ -28,6 +28,7 @@ namespace RankMyFilmCore.WebApiRank
         public IEnumerable<RankModel> GetrankModel()
         {
             return _context.rankModel;
+
         }
 
         // GET: api/Rank/get/5

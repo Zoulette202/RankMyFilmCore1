@@ -30,6 +30,8 @@ namespace RankMyFilmCore.Data
             // Add your customizations after calling base.OnModelCreating(builder);
         }
 
+        public DbSet<RankMyFilmCore.Models.ApplicationUser> ApplicationUser { get; set; }
+
         //public DbSet<RankMyFilmCore.Models.AccountViewModels.RegisterViewModel> RegisterViewModel { get; set; }
     }
 }
