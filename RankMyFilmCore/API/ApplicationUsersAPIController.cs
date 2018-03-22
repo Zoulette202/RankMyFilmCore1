@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RankMyFilmCore.Data;
@@ -28,8 +32,53 @@ namespace RankMyFilmCore.API
             return _context.ApplicationUser;
         }
 
+        // GET: api/user/getByName/xxVeustyxx
+        [HttpGet("getByName/{pseudo}")]
+        public async Task<IActionResult> GetApplicationUserByName([FromRoute] string pseudo)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var applicationUser = from ApplicationUser in _context.ApplicationUser
+                                  where ApplicationUser.pseudo == pseudo 
+                                  select ApplicationUser;
+
+            if (applicationUser == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(applicationUser);
+        }
+
+
+        [HttpGet("getByMailPassword/{email}/{password}")]
+        public async Task<IActionResult> GetApplicationUserByMailPassword([FromRoute] string email, [FromRoute] string password)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+           
+
+            var applicationUser = from ApplicationUser in _context.ApplicationUser
+                                  where ApplicationUser.Email == email && ApplicationUser.PasswordHash == password // il faut hashé le password recu dans l'url
+                                  select ApplicationUser;
+
+            if (applicationUser == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(applicationUser);
+        }
+
+
+
         // GET: api/ApplicationUsersAPI/5
-        [HttpGet("{id}")]
+        [HttpGet("get/{id}")]
         public async Task<IActionResult> GetApplicationUser([FromRoute] string id)
         {
             if (!ModelState.IsValid)

@@ -17,6 +17,8 @@ namespace RankMyFilmCore.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid guid { get; set; }
 
+        public string pseudo { get; set; }
+
     }
 }
 
