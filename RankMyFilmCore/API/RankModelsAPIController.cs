@@ -15,7 +15,7 @@ namespace RankMyFilmCore.WebApiRank
     [Produces("application/json")]
     [Route("api/Rank")]
     [EnableCors("CorsPolicy")]
-    [Authorize] // Require authenticated requests.
+    //[Authorize] // Require authenticated requests.
     public class RankModelsAPIController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -35,7 +35,7 @@ namespace RankMyFilmCore.WebApiRank
 
         // GET: api/Rank/get/5
         [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetRankModel([FromRoute] Guid id)
+        public async Task<IActionResult> GetRankModelById([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
@@ -43,6 +43,26 @@ namespace RankMyFilmCore.WebApiRank
             }
 
             var rankModel = await _context.rankModel.SingleOrDefaultAsync(m => m.ID == id);
+
+            if (rankModel == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(rankModel);
+        }
+
+
+        // GET: api/Rank/get/5
+        [HttpGet("get/{id}")]
+        public async Task<IActionResult> GetRankModelByIdUser([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var rankModel = await _context.rankModel.SingleOrDefaultAsync(m => m.idUser == id);
 
             if (rankModel == null)
             {
@@ -103,7 +123,7 @@ namespace RankMyFilmCore.WebApiRank
         }
 
         [HttpGet("createRank/{idUser}/{idFilms}/{vote}")]
-        public async Task<IActionResult> PostRankModelByIdUserIdFilm(Guid idUser, string idFilms, int vote)
+        public async Task<IActionResult> PostRankModelByIdUserIdFilm(string idUser, string idFilms, int vote)
         {
 
 
@@ -145,7 +165,7 @@ namespace RankMyFilmCore.WebApiRank
 
 
         [HttpGet("GetRankModelByUserAndFilms/{idUser}/{idFilms}")]
-        public async Task<IActionResult> GetRankModelByUserAndFilms(Guid idUser, string idFilms)
+        public async Task<IActionResult> GetRankModelByUserAndFilms(string idUser, string idFilms)
         {
             if (!ModelState.IsValid)
             {

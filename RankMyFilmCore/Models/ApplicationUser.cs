@@ -13,12 +13,11 @@ namespace RankMyFilmCore.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid guid { get; set; }
-
+        
         public string pseudo { get; set; }
 
+        
+        public string urlImage { get; set; }
     }
 }
 

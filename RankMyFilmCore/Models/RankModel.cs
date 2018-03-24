@@ -12,11 +12,13 @@ namespace RankMyFilmCore
         
         [Display(Name = "Utilisateur")]
         [ForeignKey("User")]
-        public Guid idUser { get; set; }
+        [Key, Column(Order =0)]
+        public string idUser { get; set; }
 
         
         [Display(Name = "Film")]
         [ForeignKey("Film")]
+        [Key, Column(Order =1)]
         public string idFilm { get; set; }
 
 
@@ -27,6 +29,12 @@ namespace RankMyFilmCore
         [Display(Name = "Déjà vu")]
         public bool vu { get; set; }
 
+        [Display(Name = "Poster")]
+        public string poster { get; set; }
+
+
+        [Display(Name = "Title")]
+        public string Title { get; set; }
 
         [Display(Name = "Commentaire")]
         [StringLength(255)]

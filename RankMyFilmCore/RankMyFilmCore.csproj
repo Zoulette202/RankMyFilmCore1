@@ -50,6 +50,14 @@
     <Compile Remove="Data\Migrations\20180321114605_idGuidAspNetUsers.Designer.cs" />
     <Compile Remove="Data\Migrations\20180321151752_idFilmRankString.cs" />
     <Compile Remove="Data\Migrations\20180321151752_idFilmRankString.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180323234029_idUserRankString.cs" />
+    <Compile Remove="Data\Migrations\20180323234029_idUserRankString.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180323235020_idUserRankString.cs" />
+    <Compile Remove="Data\Migrations\20180323235020_idUserRankString.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180323235706_idUseridFilmRankString.cs" />
+    <Compile Remove="Data\Migrations\20180323235706_idUseridFilmRankString.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180323235909_idUseridFilmRankString.cs" />
+    <Compile Remove="Data\Migrations\20180323235909_idUseridFilmRankString.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -68,5 +76,7 @@
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.1" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

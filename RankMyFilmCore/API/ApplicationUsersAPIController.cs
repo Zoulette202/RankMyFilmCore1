@@ -25,7 +25,7 @@ namespace RankMyFilmCore.API
             _context = context;
         }
 
-        // GET: api/ApplicationUsersAPI
+        // GET: api/user
         [HttpGet]
         public IEnumerable<ApplicationUser> GetApplicationUser()
         {
@@ -42,7 +42,7 @@ namespace RankMyFilmCore.API
             }
 
             var applicationUser = from ApplicationUser in _context.ApplicationUser
-                                  where ApplicationUser.pseudo == pseudo 
+                                  where ApplicationUser.pseudo.StartsWith(pseudo)
                                   select ApplicationUser;
 
             if (applicationUser == null)
