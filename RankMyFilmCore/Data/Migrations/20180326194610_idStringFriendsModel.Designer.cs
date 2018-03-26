@@ -11,9 +11,10 @@ using System;
 namespace RankMyFilmCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180326194610_idStringFriendsModel")]
+    partial class idStringFriendsModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,6 +161,8 @@ namespace RankMyFilmCore.Data.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<string>("idFriends");
 
                     b.Property<string>("idSuiveur");
 

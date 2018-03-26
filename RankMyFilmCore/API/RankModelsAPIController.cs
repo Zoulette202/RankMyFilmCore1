@@ -158,9 +158,45 @@ namespace RankMyFilmCore.WebApiRank
                 }
             }
 
+
             return CreatedAtAction("GetRankModel", new { id = rankModel.ID }, rankModel);
         }
 
+
+
+        [HttpGet("getRankFilmsByFriend/{idUsers}/{idFilms}")]
+        public async Task<IActionResult> getRankFilmsByFriend(string idUsers, string idFilms)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            System.Diagnostics.Debugger.Launch();
+
+            var ListFriend = await (from friend in _context.friendsModel
+                                    where friend.idSuiveur == idUsers
+                                    select friend).ToListAsync();
+
+
+            List<int> moyenByFriend = new List<int>();
+            foreach (var item in ListFriend)
+            {
+
+                var rankFriend = await (from rank in _context.rankModel
+                                        where rank.idUser == item.idSuivi.ToString()
+                                        && rank.idFilm == idFilms
+                                        select rank).FirstOrDefaultAsync();
+
+                moyenByFriend.Add(rankFriend.Vote);
+
+            }
+
+            var value = moyenByFriend.Average();
+
+            return Ok(value);
+
+        }
 
 
 

@@ -9,17 +9,13 @@ namespace RankMyFilmCore
 {
     public class FriendsModel :  ModelBase
     {
-
-        [Display(Name = "idFriends")]
-        public int idFriends { get; set; }
-
         [Display(Name = "idSuiveur")]
-        public int idSuiveur { get; set; }
+        public string idSuiveur { get; set; }
 
         
         [Display(Name = "idSuivi")]
         [StringLength(50)]
-        public int idSuivi { get; set; }
+        public string idSuivi { get; set; }
 
     }
 }
