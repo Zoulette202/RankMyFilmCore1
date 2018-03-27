@@ -172,8 +172,6 @@ namespace RankMyFilmCore.WebApiRank
                 return BadRequest(ModelState);
             }
 
-            System.Diagnostics.Debugger.Launch();
-
             var ListFriend = await (from friend in _context.friendsModel
                                     where friend.idSuiveur == idUsers
                                     select friend).ToListAsync();

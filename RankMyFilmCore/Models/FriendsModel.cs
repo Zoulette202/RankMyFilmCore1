@@ -17,5 +17,11 @@ namespace RankMyFilmCore
         [StringLength(50)]
         public string idSuivi { get; set; }
 
+        [NotMapped]
+        public string pseudoSuiveur { get; set; }
+
+        [NotMapped]
+        public string pseudoSuivi { get; set; }
+
     }
 }

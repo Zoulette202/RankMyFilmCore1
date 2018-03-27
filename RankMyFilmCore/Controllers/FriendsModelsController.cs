@@ -22,7 +22,22 @@ namespace RankMyFilmCore.Controllers
         // GET: FriendsModels
         public async Task<IActionResult> Index()
         {
-            return View(await _context.friendsModel.ToListAsync());
+            var listAmitie = await _context.friendsModel.ToListAsync();
+            
+            foreach(var item in listAmitie)
+            {
+                var nameUserSuiveur = await (from ApplicationUser in _context.ApplicationUser
+                                             where ApplicationUser.Id == item.idSuiveur
+                                             select ApplicationUser).FirstOrDefaultAsync();
+
+                var nameUserSuivi = await (from ApplicationUser in _context.ApplicationUser
+                                           where ApplicationUser.Id == item.idSuivi
+                                           select ApplicationUser).FirstOrDefaultAsync();
+
+                item.pseudoSuiveur = nameUserSuiveur.pseudo;
+                item.pseudoSuivi = nameUserSuivi.pseudo;
+            }
+            return View(listAmitie);
         }
 
         // GET: FriendsModels/Details/5
@@ -59,6 +74,16 @@ namespace RankMyFilmCore.Controllers
             if (ModelState.IsValid)
             {
                 friendsModel.ID = Guid.NewGuid();
+                var pseudoSuiveur = await (from ApplicationUser in _context.ApplicationUser
+                                     where ApplicationUser.Id == friendsModel.idSuiveur
+                                     select ApplicationUser).FirstOrDefaultAsync();
+
+                var pseudoSuivi = await (from ApplicationUser in _context.ApplicationUser
+                                     where ApplicationUser.Id == friendsModel.idSuivi
+                                     select ApplicationUser).FirstOrDefaultAsync();
+
+                friendsModel.pseudoSuiveur = pseudoSuiveur.pseudo;
+                friendsModel.pseudoSuivi = pseudoSuivi.pseudo;
                 _context.Add(friendsModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
