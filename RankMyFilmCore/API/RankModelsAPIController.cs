@@ -277,10 +277,6 @@ namespace RankMyFilmCore.WebApiRank
             var rankModel = await (from rankModels in _context.rankModel
                                    where rankModels.idUser == idUser && rankModels.idFilm == idFilms
                                    select rankModels).FirstOrDefaultAsync();
-            if (rankModel == null)
-            {
-                return NotFound();
-            }
            
             var ListFriend = await (from friend in _context.friendsModel
                                     where friend.idSuiveur == idUser
@@ -313,6 +309,12 @@ namespace RankMyFilmCore.WebApiRank
 
             var valueFriend = moyenByFriend.Average();
             var valueAllUser = moyenByAllUser.Average();
+
+            if (rankModel == null)
+            {
+                var rankModelVide = new RankModel { moyenneByFriend = valueFriend, moyenneByAllUser = valueAllUser };
+                return Ok(rankModelVide);
+            }
             rankModel.moyenneByFriend = valueFriend;
             rankModel.moyenneByAllUser = valueAllUser;
 

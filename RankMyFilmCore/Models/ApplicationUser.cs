@@ -14,6 +14,7 @@ namespace RankMyFilmCore.Models
     public class ApplicationUser : IdentityUser
     {
         
+
         public string pseudo { get; set; }
 
         
@@ -22,6 +23,9 @@ namespace RankMyFilmCore.Models
 
         [NotMapped]
         public bool teSuis { get; set; }
+
+        [NotMapped]
+        public bool jeLeSuis { get; set; }
     }
 }
 

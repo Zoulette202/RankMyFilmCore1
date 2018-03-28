@@ -87,21 +87,35 @@ namespace RankMyFilmCore.API
             }
 
             var applicationUser = await _context.ApplicationUser.SingleOrDefaultAsync(m => m.Id == id);
-            var friendModel = await (from friend in _context.friendsModel
+            var friendModeliLMeSuis = await (from friend in _context.friendsModel
                               where friend.idSuiveur.ToString() == idUser && friend.idSuivi.ToString() == id
                               select friend).ToListAsync();
+
+            var friendModelJeLeSuis = await (from friend in _context.friendsModel
+                                           where friend.idSuiveur.ToString() == id && friend.idSuivi.ToString() == idUser
+                                           select friend).ToListAsync();
 
             if (applicationUser == null)
             {
                 return NotFound();
             }
 
-            if (friendModel.Count == 0)
+            if (friendModeliLMeSuis.Count == 0)
             {
                 applicationUser.teSuis = false;
             } else
             {
                 applicationUser.teSuis = true;
+            }
+
+
+            if (friendModelJeLeSuis.Count == 0)
+            {
+                applicationUser.jeLeSuis = false;
+            }
+            else
+            {
+                applicationUser.jeLeSuis = true;
             }
 
             return Ok(applicationUser);
