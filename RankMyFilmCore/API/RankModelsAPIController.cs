@@ -164,8 +164,42 @@ namespace RankMyFilmCore.WebApiRank
 
 
 
+
         [HttpGet("getRankFilmsByFriend/{idUsers}/{idFilms}")]
         public async Task<IActionResult> getRankFilmsByFriend(string idUsers, string idFilms)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var ListFriend = await (from friend in _context.friendsModel
+                                    where friend.idSuiveur == idUsers
+                                    select friend).ToListAsync();
+
+
+            List<RankModel> listRank = new List<RankModel>();
+            foreach (var item in ListFriend)
+            {
+
+                var rankFriend = await (from rank in _context.rankModel
+                                        where rank.idUser == item.idSuivi.ToString()
+                                        && rank.idFilm == idFilms
+                                        select rank).FirstOrDefaultAsync();
+
+                listRank.Add(rankFriend);
+
+            }
+            return Ok(listRank);
+
+        }
+
+
+
+
+
+        [HttpGet("getAverageRankFilmsByFriend/{idUsers}/{idFilms}")]
+        public async Task<IActionResult> getAverageRankFilmsByFriend(string idUsers, string idFilms)
         {
             if (!ModelState.IsValid)
             {
