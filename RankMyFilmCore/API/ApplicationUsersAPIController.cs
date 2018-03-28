@@ -41,9 +41,9 @@ namespace RankMyFilmCore.API
                 return BadRequest(ModelState);
             }
 
-            var applicationUser = from ApplicationUser in _context.ApplicationUser
+            var applicationUser = await (from ApplicationUser in _context.ApplicationUser
                                   where ApplicationUser.pseudo.StartsWith(pseudo)
-                                  select ApplicationUser;
+                                  select ApplicationUser).FirstOrDefaultAsync();
 
             if (applicationUser == null)
             {
@@ -63,9 +63,9 @@ namespace RankMyFilmCore.API
             }
            
 
-            var applicationUser = from ApplicationUser in _context.ApplicationUser
+            var applicationUser = await (from ApplicationUser in _context.ApplicationUser
                                   where ApplicationUser.Email == email && ApplicationUser.PasswordHash == password // il faut hashé le password recu dans l'url
-                                  select ApplicationUser;
+                                  select ApplicationUser).FirstOrDefaultAsync();
 
             if (applicationUser == null)
             {
