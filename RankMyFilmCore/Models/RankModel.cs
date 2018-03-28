@@ -45,5 +45,8 @@ namespace RankMyFilmCore
 
         [NotMapped]
         public double moyenneByAllUser { get; set; }
+
+        [NotMapped]
+        public string pseudo { get; set; }
     }
 }

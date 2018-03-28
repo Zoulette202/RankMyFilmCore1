@@ -22,7 +22,21 @@ namespace RankMyFilmCore.Controllers
         // GET: RankModels
         public async Task<IActionResult> Index()
         {
-            return View(await _context.rankModel.ToListAsync());
+            var listeRank = await _context.rankModel.ToListAsync();
+            foreach(var item in listeRank)
+            {
+                var pseudoUser = await (from ApplicationUser in _context.ApplicationUser
+                                         where ApplicationUser.Id == item.idUser
+                                         select ApplicationUser).FirstOrDefaultAsync();
+                if(pseudoUser != null)
+                {
+                    item.pseudo = pseudoUser.pseudo;
+                }
+                
+            }
+           
+            
+            return View(listeRank);
         }
 
         // GET: RankModels/Details/5
