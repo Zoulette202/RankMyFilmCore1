@@ -40,5 +40,10 @@ namespace RankMyFilmCore
         [StringLength(255)]
         public string Commentaire { get; set; }
 
+        [NotMapped]
+        public double moyenneByFriend { get; set; }
+
+        [NotMapped]
+        public double moyenneByAllUser { get; set; }
     }
 }

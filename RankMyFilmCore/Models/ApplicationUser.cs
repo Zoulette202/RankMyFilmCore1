@@ -18,6 +18,10 @@ namespace RankMyFilmCore.Models
 
         
         public string urlImage { get; set; }
+
+
+        [NotMapped]
+        public bool teSuis { get; set; }
     }
 }
 

@@ -125,8 +125,6 @@ namespace RankMyFilmCore.WebApiRank
         [HttpGet("createRank/{idUser}/{idFilms}/{vote}")]
         public async Task<IActionResult> PostRankModelByIdUserIdFilm(string idUser, string idFilms, int vote)
         {
-
-
             var rankModel = await _context.rankModel.SingleOrDefaultAsync(m => m.idUser == idUser && m.idFilm == idFilms);
 
             if (rankModel == null)
@@ -157,8 +155,44 @@ namespace RankMyFilmCore.WebApiRank
                     }
                 }
             }
+            return CreatedAtAction("GetRankModel", new { id = rankModel.ID }, rankModel);
+        }
+
+        [HttpGet("createRank/{idUser}/{idFilms}/{vote}/{poster}/{title}")]
+        public async Task<IActionResult> PostRankModelByIdUserIdFilmPosterAndTitle(string idUser, string idFilms, int vote,string poster, string title)
+        {
 
 
+            var rankModel = await _context.rankModel.SingleOrDefaultAsync(m => m.idUser == idUser && m.idFilm == idFilms);
+
+            if (rankModel == null)
+            {
+                var rank = new RankModel { idUser = idUser, idFilm = idFilms, Vote = vote, poster = poster, Title = title};
+                _context.rankModel.Add(rank);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetRankModel", new { id = rank.ID }, rank);
+            }
+            else
+            {
+                rankModel.Vote = vote;
+                _context.Entry(rankModel).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!RankModelExists(rankModel.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
             return CreatedAtAction("GetRankModel", new { id = rankModel.ID }, rankModel);
         }
 
@@ -235,17 +269,53 @@ namespace RankMyFilmCore.WebApiRank
         [HttpGet("GetRankModelByUserAndFilms/{idUser}/{idFilms}")]
         public async Task<IActionResult> GetRankModelByUserAndFilms(string idUser, string idFilms)
         {
+            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var rankModel = from rankModels in _context.rankModel
-                            where rankModels.idUser == idUser && rankModels.idFilm == idFilms
-                            select rankModels;
+            var rankModel = await (from rankModels in _context.rankModel
+                                   where rankModels.idUser == idUser && rankModels.idFilm == idFilms
+                                   select rankModels).FirstOrDefaultAsync();
             if (rankModel == null)
             {
                 return NotFound();
             }
+           
+            var ListFriend = await (from friend in _context.friendsModel
+                                    where friend.idSuiveur == idUser
+                                    select friend).ToListAsync();
+
+            var ListAllUser = await (from user in _context.ApplicationUser
+                                     select user).ToListAsync();
+
+            List<int> moyenByFriend = new List<int>();
+            List<int> moyenByAllUser = new List<int>();
+            foreach (var item in ListFriend)
+            {
+                var rankFriend = await (from rank in _context.rankModel
+                                        where rank.idUser == item.idSuivi && rank.idFilm == idFilms
+                                        select rank).FirstOrDefaultAsync();
+                moyenByFriend.Add(rankFriend.Vote);
+            }
+
+            foreach (var item in ListAllUser)
+            {
+                var rankAllUser = await (from rank in _context.rankModel
+                                         where rank.idUser == item.Id && rank.idFilm == idFilms
+                                         select rank).FirstOrDefaultAsync();
+                if (rankAllUser != null)
+                {
+                    moyenByAllUser.Add(rankAllUser.Vote);
+                }
+                
+            }
+
+            var valueFriend = moyenByFriend.Average();
+            var valueAllUser = moyenByAllUser.Average();
+            rankModel.moyenneByFriend = valueFriend;
+            rankModel.moyenneByAllUser = valueAllUser;
+
             return Ok(rankModel);
         }
 

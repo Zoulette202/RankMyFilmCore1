@@ -78,8 +78,37 @@ namespace RankMyFilmCore.API
 
 
         // GET: api/ApplicationUsersAPI/5
+        [HttpGet("get/{id}/{idUser}")]
+        public async Task<IActionResult> GetApplicationUserWithFollow([FromRoute] string id, [FromRoute] string idUser)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var applicationUser = await _context.ApplicationUser.SingleOrDefaultAsync(m => m.Id == id);
+            var friendModel = await (from friend in _context.friendsModel
+                              where friend.idSuiveur.ToString() == idUser && friend.idSuivi.ToString() == id
+                              select friend).ToListAsync();
+
+            if (applicationUser == null)
+            {
+                return NotFound();
+            }
+
+            if (friendModel.Count == 0)
+            {
+                applicationUser.teSuis = false;
+            } else
+            {
+                applicationUser.teSuis = true;
+            }
+
+            return Ok(applicationUser);
+        }
+
         [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetApplicationUser([FromRoute] string id)
+        public async Task<IActionResult> GetApplicationUser([FromRoute] string id, [FromRoute] string idUser)
         {
             if (!ModelState.IsValid)
             {
@@ -92,6 +121,7 @@ namespace RankMyFilmCore.API
             {
                 return NotFound();
             }
+
 
             return Ok(applicationUser);
         }

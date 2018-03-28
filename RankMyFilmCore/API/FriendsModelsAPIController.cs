@@ -24,9 +24,22 @@ namespace RankMyFilmCore.API
 
         // GET: api/FriendsModels
         [HttpGet]
-        public IEnumerable<FriendsModel> GetfriendsModel()
+        public async Task<IActionResult> GetfriendsModel()
         {
-            return _context.friendsModel;
+            foreach(var item in _context.friendsModel)
+            {
+                var pseudoSuiveur = await (from ApplicationUser in _context.ApplicationUser
+                                           where ApplicationUser.Id == item.idSuiveur
+                                           select ApplicationUser).FirstOrDefaultAsync();
+
+                var pseudoSuivi = await (from ApplicationUser in _context.ApplicationUser
+                                    where ApplicationUser.Id == item.idSuivi
+                                    select ApplicationUser).FirstOrDefaultAsync();
+
+                item.pseudoSuiveur = pseudoSuiveur.pseudo;
+                item.pseudoSuivi = pseudoSuivi.pseudo;
+            }
+            return Ok(_context.friendsModel);
         }
 
         // GET: api/FriendsModels/5
@@ -77,10 +90,35 @@ namespace RankMyFilmCore.API
             if (ListfriendModel.Count > 0)
             {
                 trouver = true;
-
             }
 
             return Ok(trouver);
+        }
+
+        [HttpGet("suivre/{idMoi}/{idQuelqun}")]
+        public async Task<IActionResult> createFriends([FromRoute] string idMoi, [FromRoute] string idQuelqun)
+        {
+            if (ModelState.IsValid)
+            {
+                var friendsModel = new FriendsModel { ID = new Guid(), idSuiveur = idMoi, idSuivi = idQuelqun };
+                var pseudoSuiveur = await (from ApplicationUser in _context.ApplicationUser
+                                           where ApplicationUser.Id == friendsModel.idSuiveur
+                                           select ApplicationUser).FirstOrDefaultAsync();
+
+                var pseudoSuivi = await (from ApplicationUser in _context.ApplicationUser
+                                         where ApplicationUser.Id == friendsModel.idSuivi
+                                         select ApplicationUser).FirstOrDefaultAsync();
+
+                friendsModel.pseudoSuiveur = pseudoSuiveur.pseudo;
+                friendsModel.pseudoSuivi = pseudoSuivi.pseudo;
+                _context.Add(friendsModel);
+                await _context.SaveChangesAsync();
+
+                return Ok(friendsModel);
+            }else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
 
