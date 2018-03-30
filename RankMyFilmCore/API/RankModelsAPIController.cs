@@ -312,11 +312,17 @@ namespace RankMyFilmCore.WebApiRank
                 
             }
             var valueFriend = 0.0;
+            var valueAllUser = 0.0;
             if (moyenByFriend.Count > 0)
             {
                 valueFriend = moyenByFriend.Average();
             }
-            var valueAllUser = moyenByAllUser.Average();
+
+            if(moyenByAllUser.Count > 0)
+            {
+                valueAllUser = moyenByAllUser.Average();
+            }
+             
 
             if (rankModel == null)
             {
