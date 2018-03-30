@@ -43,9 +43,9 @@ namespace RankMyFilmCore.API
 
             var applicationUser = await (from ApplicationUser in _context.ApplicationUser
                                   where ApplicationUser.pseudo.StartsWith(pseudo)
-                                  select ApplicationUser).FirstOrDefaultAsync();
+                                  select ApplicationUser).ToListAsync();
 
-            if (applicationUser == null)
+            if (applicationUser.Count == 0)
             {
                 return NotFound();
             }
@@ -86,7 +86,7 @@ namespace RankMyFilmCore.API
                 return BadRequest(ModelState);
             }
 
-            var applicationUser = await _context.ApplicationUser.SingleOrDefaultAsync(m => m.Id == id);
+            var applicationUser = await _context.ApplicationUser.SingleOrDefaultAsync(m => m.Id == idUser);
             var friendModeliLMeSuis = await (from friend in _context.friendsModel
                               where friend.idSuiveur.ToString() == idUser && friend.idSuivi.ToString() == id
                               select friend).ToListAsync();

@@ -292,7 +292,12 @@ namespace RankMyFilmCore.WebApiRank
                 var rankFriend = await (from rank in _context.rankModel
                                         where rank.idUser == item.idSuivi && rank.idFilm == idFilms
                                         select rank).FirstOrDefaultAsync();
-                moyenByFriend.Add(rankFriend.Vote);
+
+                if (rankFriend != null)
+                {
+                    moyenByFriend.Add(rankFriend.Vote);
+                }
+               
             }
 
             foreach (var item in ListAllUser)

@@ -10,11 +10,14 @@ namespace RankMyFilmCore
     public class FriendsModel :  ModelBase
     {
         [Display(Name = "idSuiveur")]
+        [ForeignKey("ApplicationUser")]
+        [Key, Column(Order = 0)]
         public string idSuiveur { get; set; }
 
         
         [Display(Name = "idSuivi")]
-        [StringLength(50)]
+        [ForeignKey("ApplicationUser")]
+        [Key, Column(Order = 1)]
         public string idSuivi { get; set; }
 
         [NotMapped]
