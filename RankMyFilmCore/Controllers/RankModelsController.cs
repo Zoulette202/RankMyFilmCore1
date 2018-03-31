@@ -73,6 +73,7 @@ namespace RankMyFilmCore.Controllers
             if (ModelState.IsValid)
             {
                 rankModel.ID = Guid.NewGuid();
+                rankModel.dateCréation = DateTime.Now;
                 _context.Add(rankModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,7 @@ namespace RankMyFilmCore.API
 {
     [Produces("application/json")]
     [Route("api/User")]
+    [EnableCors("CorsPolicy")]
     public class ApplicationUsersAPIController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -36,6 +36,9 @@ namespace RankMyFilmCore
         [Display(Name = "Title")]
         public string Title { get; set; }
 
+
+        public DateTime dateCréation { get; set; }
+
         [Display(Name = "Commentaire")]
         [StringLength(255)]
         public string Commentaire { get; set; }
