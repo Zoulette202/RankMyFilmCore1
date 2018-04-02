@@ -29,9 +29,48 @@ namespace RankMyFilmCore.API
 
         // GET: api/user
         [HttpGet]
-        public IEnumerable<ApplicationUser> GetApplicationUser()
+        public async Task<IActionResult> GetApplicationUser()
         {
-            return _context.ApplicationUser;
+
+            var applicationUsers =  _context.ApplicationUser.ToList();
+            foreach (var a in applicationUsers)
+            {
+
+                var listFriendJesuit = await(from friend in _context.friendsModel
+                                             where friend.idSuiveur == a.Id
+                                             select friend).ToListAsync();
+
+                var listFriendOnMeSuit = await(from friend in _context.friendsModel
+                                               where friend.idSuivi == a.Id
+                                               select friend).ToListAsync();
+
+                if (listFriendJesuit.Count == 0)
+                {
+                    a.nbJesuis = 0;
+                }
+                else
+                {
+                    foreach (var f in listFriendJesuit)
+                    {
+                        a.nbJesuis += 1;
+                    }
+                }
+
+
+                if (listFriendOnMeSuit.Count == 0)
+                {
+                    a.nbOnMeSuis = 0;
+                }
+                else
+                {
+                    foreach (var f in listFriendOnMeSuit)
+                    {
+                        a.nbOnMeSuis += 1;
+                    }
+                }
+            }
+
+            return Ok(applicationUsers);
         }
 
         // GET: api/user/getByName/xxVeustyxx
@@ -51,6 +90,44 @@ namespace RankMyFilmCore.API
             {
                 return NotFound();
             }
+
+            foreach (var a in applicationUser)
+            {
+
+                var listFriendJesuit = await (from friend in _context.friendsModel
+                                              where friend.idSuiveur == a.Id
+                                              select friend).ToListAsync();
+
+                var listFriendOnMeSuit = await (from friend in _context.friendsModel
+                                                where friend.idSuivi == a.Id
+                                                select friend).ToListAsync();
+
+                if (listFriendJesuit.Count == 0)
+                {
+                    a.nbJesuis = 0;
+                }
+                else
+                {
+                    foreach (var f in listFriendJesuit)
+                    {
+                        a.nbJesuis += 1;
+                    }
+                }
+
+
+                if (listFriendOnMeSuit.Count == 0)
+                {
+                    a.nbOnMeSuis = 0;
+                }
+                else
+                {
+                    foreach (var f in listFriendOnMeSuit)
+                    {
+                        a.nbOnMeSuis += 1;
+                    }
+                }
+            }
+
 
             return Ok(applicationUser);
         }
@@ -107,6 +184,10 @@ namespace RankMyFilmCore.API
                 applicationUser.teSuis = false;
             } else
             {
+                foreach(var f in friendModeliLMeSuis)
+                {
+                    applicationUser.nbOnMeSuis += 1;
+                }
                 applicationUser.teSuis = true;
             }
 
@@ -117,6 +198,10 @@ namespace RankMyFilmCore.API
             }
             else
             {
+                foreach (var f in friendModelJeLeSuis)
+                {
+                    applicationUser.nbJesuis += 1;
+                }
                 applicationUser.jeLeSuis = true;
             }
 
@@ -124,7 +209,7 @@ namespace RankMyFilmCore.API
         }
 
         [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetApplicationUser([FromRoute] string id, [FromRoute] string idUser)
+        public async Task<IActionResult> GetApplicationUser([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
@@ -133,11 +218,45 @@ namespace RankMyFilmCore.API
 
             var applicationUser = await _context.ApplicationUser.SingleOrDefaultAsync(m => m.Id == id);
 
+            var listFriendJesuit = await (from friend in _context.friendsModel
+                                          where friend.idSuiveur == id
+                                          select friend).ToListAsync();
+
+            var listFriendOnMeSuit = await (from friend in _context.friendsModel
+                                          where friend.idSuivi == id
+                                          select friend).ToListAsync();
+
+            if (listFriendJesuit.Count == 0)
+            {
+                applicationUser.nbJesuis = 0;
+            }
+            else
+            {
+                foreach (var f in listFriendJesuit)
+                {
+                    applicationUser.nbJesuis += 1;
+                }
+            }
+
+
+            if (listFriendOnMeSuit.Count == 0)
+            {
+                applicationUser.nbOnMeSuis = 0;
+            }
+            else
+            {
+                foreach (var f in listFriendOnMeSuit)
+                {
+                    applicationUser.nbOnMeSuis += 1;
+                }
+            }
+
+
             if (applicationUser == null)
             {
                 return NotFound();
             }
-
+            
 
             return Ok(applicationUser);
         }

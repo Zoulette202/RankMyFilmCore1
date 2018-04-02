@@ -97,6 +97,13 @@ namespace RankMyFilmCore.API
             return Ok(trouver);
         }
 
+
+        /// <summary>
+        /// Crée un lien d'amitié
+        /// </summary>
+        /// <param name="idMoi"></param>
+        /// <param name="idQuelqun"></param>
+        /// <returns></returns>
         [HttpGet("suivre/{idMoi}/{idQuelqun}")]
         public async Task<IActionResult> createFriends([FromRoute] string idMoi, [FromRoute] string idQuelqun)
         {
@@ -202,6 +209,48 @@ namespace RankMyFilmCore.API
 
             return Ok(listMyFriend);
         }
+
+
+        [HttpGet("getMyListFollow/{idMoi}")]
+        public async Task<IActionResult> getMyListFollow([FromRoute] string idMoi)
+        {
+
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var ListfriendModel = await (from friend in _context.friendsModel
+                                         where friend.idSuivi.ToString() == idMoi
+                                         select friend).ToListAsync();
+
+            if (ListfriendModel == null)
+            {
+                return NotFound();
+            }
+            List<ApplicationUser> listMyFollow = new List<ApplicationUser>();
+            if (ListfriendModel.Count > 0)
+            {
+
+                foreach (var item in ListfriendModel)
+                {
+                    var applicationUser = await (from ApplicationUser in _context.ApplicationUser
+                                                 where ApplicationUser.Id == item.idSuiveur.ToString()
+                                                 select ApplicationUser).FirstOrDefaultAsync();
+
+                    if (applicationUser == null)
+                    {
+                        return NotFound();
+                    }
+                    listMyFollow.Add(applicationUser);
+
+                }
+            }
+
+            return Ok(listMyFollow);
+        }
+
 
         // PUT: api/FriendsModels/5
         [HttpPut("{id}")]
