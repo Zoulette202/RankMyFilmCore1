@@ -12,6 +12,10 @@ namespace RankMyFilmCore.Data.Migrations
                 name: "AK_rankModel_ID",
                 table: "rankModel");
 
+            migrationBuilder.DropPrimaryKey(
+               name: "PK_rankModel",
+               table: "rankModel");
+
             migrationBuilder.AlterColumn<string>(
                 name: "idUser",
                 table: "rankModel",
@@ -38,17 +42,17 @@ namespace RankMyFilmCore.Data.Migrations
                 nullable: true,
                 oldClrType: typeof(int));
 
-            migrationBuilder.AddUniqueConstraint(
-                name: "AK_rankModel_ID_idFilm_idUser",
-                table: "rankModel",
-                columns: new[] { "ID", "idFilm", "idUser" });
+            migrationBuilder.AddPrimaryKey(
+                 name: "PK_rankModel",
+                 table: "rankModel",
+                 columns: new[] { "idUser", "idFilm" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropUniqueConstraint(
-                name: "AK_rankModel_ID_idFilm_idUser",
-                table: "rankModel");
+            migrationBuilder.DropPrimaryKey(
+              name: "PK_rankModel",
+              table: "rankModel");
 
             migrationBuilder.AlterColumn<Guid>(
                 name: "idUser",
@@ -83,6 +87,12 @@ namespace RankMyFilmCore.Data.Migrations
                 name: "AK_rankModel_ID",
                 table: "rankModel",
                 column: "ID");
+
+
+            migrationBuilder.AddPrimaryKey(
+                 name: "PK_rankModel",
+                 table: "rankModel",
+                 columns: new[] { "idUser", "idFilm" });
         }
     }
 }

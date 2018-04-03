@@ -68,6 +68,7 @@ namespace RankMyFilmCore.API
                         a.nbOnMeSuis += 1;
                     }
                 }
+                nbRankUser(a);
             }
 
             return Ok(applicationUsers);
@@ -126,6 +127,7 @@ namespace RankMyFilmCore.API
                         a.nbOnMeSuis += 1;
                     }
                 }
+                nbRankUser(a);
             }
 
 
@@ -150,7 +152,7 @@ namespace RankMyFilmCore.API
             {
                 return NotFound();
             }
-
+            nbRankUser(applicationUser);
             return Ok(applicationUser);
         }
 
@@ -205,6 +207,8 @@ namespace RankMyFilmCore.API
                 applicationUser.jeLeSuis = true;
             }
 
+            nbRankUser(applicationUser);
+
             return Ok(applicationUser);
         }
 
@@ -256,8 +260,8 @@ namespace RankMyFilmCore.API
             {
                 return NotFound();
             }
-            
 
+            nbRankUser(applicationUser);
             return Ok(applicationUser);
         }
 
@@ -335,6 +339,15 @@ namespace RankMyFilmCore.API
         private bool ApplicationUserExists(string id)
         {
             return _context.ApplicationUser.Any(e => e.Id == id);
+        }
+
+        public void nbRankUser(ApplicationUser user)
+        {
+            var rankUser =  (from rank in _context.rankModel
+                                  where rank.idUser == user.Id
+                                  select rank).Count();
+
+            user.nbRank = rankUser;
         }
     }
 }

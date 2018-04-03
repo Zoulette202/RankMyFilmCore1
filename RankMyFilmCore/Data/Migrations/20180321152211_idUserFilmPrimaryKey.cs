@@ -16,7 +16,7 @@ namespace RankMyFilmCore.Data.Migrations
                 name: "PK_rankModel",
                 table: "rankModel");
 
-            migrationBuilder.AlterColumn<Guid>(
+            migrationBuilder.AlterColumn<string>(
                 name: "idUser",
                 table: "rankModel",
                 nullable: false,

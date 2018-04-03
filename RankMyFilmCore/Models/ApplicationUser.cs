@@ -32,6 +32,10 @@ namespace RankMyFilmCore.Models
 
         [NotMapped]
         public int nbOnMeSuis { get; set; }
+
+
+        [NotMapped]
+        public int nbRank { get; set; }
     }
 }
 

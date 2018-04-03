@@ -58,6 +58,8 @@
     <Compile Remove="Data\Migrations\20180323235706_idUseridFilmRankString.Designer.cs" />
     <Compile Remove="Data\Migrations\20180323235909_idUseridFilmRankString.cs" />
     <Compile Remove="Data\Migrations\20180323235909_idUseridFilmRankString.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180403203729_ajustement1.cs" />
+    <Compile Remove="Data\Migrations\20180403203729_ajustement1.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

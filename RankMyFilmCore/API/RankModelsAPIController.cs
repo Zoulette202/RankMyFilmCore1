@@ -115,7 +115,7 @@ namespace RankMyFilmCore.WebApiRank
             
             if (rankModel.Count == 0)
             {
-                return NotFound();
+                return Ok(rankModel);
             }
             List<RankModel> ranks = new List<RankModel>();
             foreach (var item in rankModel)
@@ -430,14 +430,15 @@ namespace RankMyFilmCore.WebApiRank
                                   where rank.idUser == idUsers
                                   select rank).ToListAsync();
 
+
             if (rankUser.Count == 0)
             {
-                return NotFound();
+                return Ok(rankUser);
             }
 
             rankUser = rankUser.OrderByDescending(r => r.dateCréation).ToList();
             List<RankModel> ranks = new List<RankModel>();
-            foreach(var item in rankUser)
+            foreach (var item in rankUser)
             {
                 RankModel r = MoyenneRankUserFilm(item, item.idUser, item.idFilm);
                 ranks.Add(r);

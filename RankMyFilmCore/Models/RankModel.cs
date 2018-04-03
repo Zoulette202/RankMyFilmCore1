@@ -11,7 +11,7 @@ namespace RankMyFilmCore
     {
         
         [Display(Name = "Utilisateur")]
-        [ForeignKey("User")]
+        [ForeignKey("ApplicationUser")]
         [Key, Column(Order =0)]
         public string idUser { get; set; }
 
