@@ -462,7 +462,7 @@ namespace RankMyFilmCore.WebApiRank
 
             if(rankUser.Count == 0)
             {
-                return NotFound();
+                return Ok(rankUser);
             }
             List<RankModel> ranks = new List<RankModel>();
             foreach (var item in rankUser)
