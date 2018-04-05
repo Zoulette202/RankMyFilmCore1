@@ -11,6 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using RankMyFilmCore.Data;
 using RankMyFilmCore.Models;
 using RankMyFilmCore.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace RankMyFilmCore
 {
@@ -34,13 +38,14 @@ namespace RankMyFilmCore
                 .AddDefaultTokenProviders();
 
             // j'ai add ça pour les requête multiorigines (Cross-Origin Request)
-            services.AddCors(option => {
+            services.AddCors(option =>
+            {
                 option.AddPolicy("CorsPolicy",
                 builder => builder.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
-             });
+            });
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -59,8 +64,35 @@ namespace RankMyFilmCore
 
                 // User settings
                 options.User.RequireUniqueEmail = true;
+
+              
+
+                // ===== Add Jwt Authentication ========
+                JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // => remove default claims
+                services
+                    .AddAuthentication(jwtBearerOptions =>
+                    {
+                        jwtBearerOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                        jwtBearerOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                        jwtBearerOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+                    })
+                    .AddJwtBearer(cfg =>
+                    {
+                        cfg.RequireHttpsMetadata = false;
+                        cfg.SaveToken = true;
+                        cfg.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidIssuer = Configuration["Jwt:Issuer"],
+                            ValidAudience = Configuration["Jwt:Issuer"],
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                            ClockSkew = TimeSpan.Zero // remove delay of token when expire
+                    };
+                    });
+
             });
 
+            
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
@@ -79,7 +111,7 @@ namespace RankMyFilmCore
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
-           
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

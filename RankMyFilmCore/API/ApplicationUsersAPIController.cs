@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using RankMyFilmCore.Data;
 using RankMyFilmCore.Models;
+using RankMyFilmCore.Models.AccountViewModels;
+using RankMyFilmCore.Utilitaire;
 
 namespace RankMyFilmCore.API
 {
@@ -22,9 +30,16 @@ namespace RankMyFilmCore.API
     {
         private readonly ApplicationDbContext _context;
 
-        public ApplicationUsersAPIController(ApplicationDbContext context)
+        public UserManager<ApplicationUser> UserManager { get; private set; }
+        private readonly SignInManager<ApplicationUser> _signInManager;
+
+        public IConfiguration _configuration { get; set; }
+        public ApplicationUsersAPIController(ApplicationDbContext context, SignInManager<ApplicationUser>sing, IConfiguration config )
         {
             _context = context;
+            _signInManager = sing;
+            _configuration = config;
+
         }
 
         // GET: api/user
@@ -132,6 +147,51 @@ namespace RankMyFilmCore.API
 
 
             return Ok(applicationUser);
+        }
+
+
+
+       [HttpGet("getToken/{email}/{mdp}")]
+       public async Task<UtilitaireToken> GenerateJwtToken([FromRoute] string email, [FromRoute] string mdp)
+        {
+            UtilitaireToken util = new UtilitaireToken();
+
+
+
+            var result = await _signInManager.PasswordSignInAsync(email, mdp, false, lockoutOnFailure: false);
+
+            
+            if (result.Succeeded)
+            {
+                var user = await (from u in _context.ApplicationUser
+                                  where u.Email == email
+                                  select u).FirstOrDefaultAsync(); 
+                var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
+            };
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:ExpireDays"]));
+
+                var token = new JwtSecurityToken(
+                    _configuration["Jwt:Issuer"],
+                    _configuration["Jwt:Issuer"],
+                    claims,
+                    expires: expires,
+                    signingCredentials: creds
+                );
+
+             var tok=new JwtSecurityTokenHandler().WriteToken(token);
+                util.id = user.Id;
+                util.token = tok;
+                return util;
+            }
+            else
+                return util;
         }
 
 

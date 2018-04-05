@@ -97,6 +97,11 @@ namespace RankMyFilmCore.API
             return Ok(trouver);
         }
 
+       /* public async Task<IActionResult> unfollow([FromRoute] string idMoi, [FromRoute] string idQuelqun)
+        {
+
+        }*/
+
 
         /// <summary>
         /// Crée un lien d'amitié
