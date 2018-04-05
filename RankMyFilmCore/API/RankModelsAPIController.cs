@@ -32,63 +32,63 @@ namespace RankMyFilmCore.WebApiRank
             List<RankModel> allRanks = new List<RankModel>();
             var ListRank = await (from rank in _context.rankModel
                                   select rank).ToListAsync();
-
-
-            foreach (var vote in ListRank)
+        
+            foreach (var ranks in ListRank)
             {
-                var ListFriend = await (from friend in _context.friendsModel
-                                        where friend.idSuiveur == vote.idUser
-                                        select friend).ToListAsync();
+               
+                    var ListFriend = await (from friend in _context.friendsModel
+                                            where friend.idSuiveur == ranks.idUser
+                                            select friend).ToListAsync();
 
-                var ListAllUser = await (from user in _context.ApplicationUser
-                                         select user).ToListAsync();
+                    var ListAllUser = await (from user in _context.ApplicationUser
+                                             select user).ToListAsync();
 
-                List<int> moyenByFriend = new List<int>();
-                List<int> moyenByAllUser = new List<int>();
-                foreach (var item in ListFriend)
-                {
-                    var rankFriend = await (from rank in _context.rankModel
-                                            where rank.idUser == item.idSuivi && rank.idFilm == vote.idFilm
-                                            select rank).FirstOrDefaultAsync();
-
-                    if (rankFriend != null)
+                    List<int> moyenByFriend = new List<int>();
+                    List<int> moyenByAllUser = new List<int>();
+                    foreach (var item in ListFriend)
                     {
-                        moyenByFriend.Add(rankFriend.Vote);
+                        var rankFriend = await (from rank in _context.rankModel
+                                                where rank.idUser == item.idSuivi && rank.idFilm == ranks.idFilm
+                                                select rank).FirstOrDefaultAsync();
+
+                        if (rankFriend != null)
+                        {
+                            moyenByFriend.Add(rankFriend.Vote);
+                        }
+
                     }
 
-                }
-
-                foreach (var item in ListAllUser)
-                {
-                    var rankAllUser = await (from rank in _context.rankModel
-                                             where rank.idUser == item.Id && rank.idFilm == vote.idFilm
-                                             select rank).FirstOrDefaultAsync();
-                    if (rankAllUser != null)
+                    foreach (var item in ListAllUser)
                     {
-                        moyenByAllUser.Add(rankAllUser.Vote);
+                        var rankAllUser = await (from rank in _context.rankModel
+                                                 where rank.idUser == item.Id && rank.idFilm == ranks.idFilm
+                                                 select rank).FirstOrDefaultAsync();
+                        if (rankAllUser != null)
+                        {
+                            moyenByAllUser.Add(rankAllUser.Vote);
+                        }
+
+                    }
+                    var valueFriend = 0.0;
+                    var valueAllUser = 0.0;
+                    if (moyenByFriend.Count > 0)
+                    {
+                        valueFriend = moyenByFriend.Average();
                     }
 
-                }
-                var valueFriend = 0.0;
-                var valueAllUser = 0.0;
-                if (moyenByFriend.Count > 0)
-                {
-                    valueFriend = moyenByFriend.Average();
-                }
+                    if (moyenByAllUser.Count > 0)
+                    {
+                        valueAllUser = moyenByAllUser.Average();
+                    }
+                    else
+                    {
+                        valueAllUser = ranks.Vote;
+                    }
 
-                if (moyenByAllUser.Count > 0)
-                {
-                    valueAllUser = moyenByAllUser.Average();
-                }else
-                {
-                    valueAllUser = vote.Vote;
-                }
-
-                vote.moyenneByAllUser = valueAllUser;
-                vote.moyenneByFriend = valueFriend;
-                allRanks.Add(vote);
-
-
+                    ranks.moyenneByAllUser = valueAllUser;
+                    ranks.moyenneByFriend = valueFriend;
+                    allRanks.Add(ranks);
+                  
             }
 
 
@@ -120,7 +120,7 @@ namespace RankMyFilmCore.WebApiRank
             List<RankModel> ranks = new List<RankModel>();
             foreach (var item in rankModel)
             {
-                RankModel r = MoyenneRankUserFilm(item, item.idUser, item.idFilm);
+                RankModel r = await averageRankUserFilm(item, item.idUser, item.idFilm);
                 ranks.Add(r);
             }
             
@@ -177,8 +177,8 @@ namespace RankMyFilmCore.WebApiRank
             return CreatedAtAction("GetRankModel", new { id = rankModel.ID }, rankModel);
         }
 
-        [HttpGet("createRank/{idUser}/{idFilms}/{vote}")]
-        public async Task<IActionResult> PostRankModelByIdUserIdFilm(string idUser, string idFilms, int vote)
+        [HttpGet("createRank/{idUser}/{idFilms}/{ranksParam}")]
+        public async Task<IActionResult> PostRankModelByIdUserIdFilm(string idUser, string idFilms, int ranksParam)
         {
             var rankModel = await _context.rankModel.SingleOrDefaultAsync(m => m.idUser == idUser && m.idFilm == idFilms);
 
@@ -231,17 +231,17 @@ namespace RankMyFilmCore.WebApiRank
                 }
                 else
                 {
-                    valueAllUser = vote;
+                    valueAllUser = ranksParam;
                 }
 
-                var rank = new RankModel { idUser = idUser, idFilm = idFilms, Vote = vote, moyenneByAllUser = valueAllUser, moyenneByFriend = valueFriend , dateCréation = DateTime.Now};
+                var rank = new RankModel { idUser = idUser, idFilm = idFilms, Vote = ranksParam, moyenneByAllUser = valueAllUser, moyenneByFriend = valueFriend , dateCréation = DateTime.Now};
                 _context.rankModel.Add(rank);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetRankModel", new { id = rank.ID }, rank);
             }
             else
             {
-                rankModel.Vote = vote;
+                rankModel.Vote = ranksParam;
                 _context.Entry(rankModel).State = EntityState.Modified;
 
                 try
@@ -263,8 +263,8 @@ namespace RankMyFilmCore.WebApiRank
             return CreatedAtAction("GetRankModel", new { id = rankModel.ID }, rankModel);
         }
 
-        [HttpGet("createRank/{idUser}/{idFilms}/{vote}/{poster}/{title}")]
-        public async Task<IActionResult> PostRankModelByIdUserIdFilmPosterAndTitle(string idUser, string idFilms, int vote,string poster, string title)
+        [HttpGet("createRank/{idUser}/{idFilms}/{ranksParam}/{poster}/{title}")]
+        public async Task<IActionResult> PostRankModelByIdUserIdFilmPosterAndTitle(string idUser, string idFilms, int ranksParam, string poster, string title)
         {
 
 
@@ -318,18 +318,18 @@ namespace RankMyFilmCore.WebApiRank
                 }
                 else
                 {
-                    valueAllUser = vote;
+                    valueAllUser = ranksParam;
                 }
 
 
-                var rank = new RankModel { idUser = idUser, idFilm = idFilms, Vote = vote, poster = poster, Title = title, moyenneByAllUser = valueAllUser, moyenneByFriend = valueFriend, dateCréation = DateTime.Now};
+                var rank = new RankModel { idUser = idUser, idFilm = idFilms, Vote = ranksParam, poster = poster, Title = title, moyenneByAllUser = valueAllUser, moyenneByFriend = valueFriend, dateCréation = DateTime.Now};
                 _context.rankModel.Add(rank);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetRankModel", new { id = rank.ID }, rank);
             }
             else
             {
-                rankModel.Vote = vote;
+                rankModel.Vote = ranksParam;
                 _context.Entry(rankModel).State = EntityState.Modified;
 
                 try
@@ -353,7 +353,7 @@ namespace RankMyFilmCore.WebApiRank
 
 
         [HttpGet("getRankFilmsByFriend/{idUsers}/{idFilms}")]
-        public async Task<IActionResult> getRankFilmsByFriend(string idUsers, string idFilms)
+        public async Task<IActionResult> GetRankFilmsByFriend(string idUsers, string idFilms)
         {
             if (!ModelState.IsValid)
             {
@@ -381,12 +381,9 @@ namespace RankMyFilmCore.WebApiRank
 
         }
 
-
-
-
-
+        
         [HttpGet("getAverageRankFilmsByFriend/{idUsers}/{idFilms}")]
-        public async Task<IActionResult> getAverageRankFilmsByFriend(string idUsers, string idFilms)
+        public async Task<IActionResult> GetAverageRankFilmsByFriend(string idUsers, string idFilms)
         {
             if (!ModelState.IsValid)
             {
@@ -419,7 +416,7 @@ namespace RankMyFilmCore.WebApiRank
 
 
         [HttpGet("getRankByDate/{idUsers}/{limite}")]
-        public async Task<IActionResult> getRankByDate([FromRoute]string idUsers, [FromRoute]int limite)
+        public async Task<IActionResult> GetRankByDate([FromRoute]string idUsers, [FromRoute]int limite)
         {
             if (!ModelState.IsValid)
             {
@@ -440,7 +437,7 @@ namespace RankMyFilmCore.WebApiRank
             List<RankModel> ranks = new List<RankModel>();
             foreach (var item in rankUser)
             {
-                RankModel r = MoyenneRankUserFilm(item, item.idUser, item.idFilm);
+                RankModel r = await averageRankUserFilm(item, item.idUser, item.idFilm);
                 ranks.Add(r);
             }
 
@@ -449,7 +446,7 @@ namespace RankMyFilmCore.WebApiRank
 
 
         [HttpGet("getRankByTitle/{idUsers}/{title}")]
-        public async Task<IActionResult> getRankByTitle([FromRoute]string idUsers, [FromRoute]string title)
+        public async Task<IActionResult> GetRankByTitle([FromRoute]string idUsers, [FromRoute]string title)
         {
             if (!ModelState.IsValid)
             {
@@ -467,15 +464,14 @@ namespace RankMyFilmCore.WebApiRank
             List<RankModel> ranks = new List<RankModel>();
             foreach (var item in rankUser)
             {
-                RankModel r = MoyenneRankUserFilm(item, item.idUser, item.idFilm);
+                RankModel r = await averageRankUserFilm(item, item.idUser, item.idFilm);
                 ranks.Add(r);
             }
 
             return Ok(ranks);
         }
 
-
-
+        
         [HttpGet("GetRankModelByUserAndFilms/{idUser}/{idFilms}")]
         public async Task<IActionResult> GetRankModelByUserAndFilms(string idUser, string idFilms)
         {
@@ -568,22 +564,22 @@ namespace RankMyFilmCore.WebApiRank
         }
 
 
-        private RankModel MoyenneRankUserFilm(RankModel r, string user_id, string film_id)
+        private  async Task<RankModel> averageRankUserFilm(RankModel r, string user_id, string film_id)
         {
-            var ListFriend = (from friend in _context.friendsModel
+            var ListFriend = await (from friend in _context.friendsModel
                               where friend.idSuiveur == user_id
-                              select friend).ToList();
+                              select friend).ToListAsync();
 
-            var ListAllUser = (from user in _context.ApplicationUser
-                                    select user).ToList();
+            var ListAllUser = await (from user in _context.ApplicationUser
+                                    select user).ToListAsync();
 
             List<int> moyenByFriend = new List<int>();
             List<int> moyenByAllUser = new List<int>();
             foreach (var item in ListFriend)
             {
-                var rankFriend = (from rank in _context.rankModel
+                var rankFriend = await (from rank in _context.rankModel
                                        where rank.idUser == item.idSuivi && rank.idFilm == film_id
-                                       select rank).FirstOrDefault();
+                                       select rank).FirstOrDefaultAsync();
 
                 if (rankFriend != null)
                 {
@@ -594,9 +590,9 @@ namespace RankMyFilmCore.WebApiRank
 
             foreach (var item in ListAllUser)
             {
-                var rankAllUser = (from rank in _context.rankModel
+                var rankAllUser = await (from rank in _context.rankModel
                                         where rank.idUser == item.Id && rank.idFilm == film_id
-                                        select rank).FirstOrDefault();
+                                        select rank).FirstOrDefaultAsync();
                 if (rankAllUser != null)
                 {
                     moyenByAllUser.Add(rankAllUser.Vote);

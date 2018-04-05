@@ -23,6 +23,8 @@ namespace RankMyFilmCore.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+            //It's here where we defined the Primary Keys
             builder.Entity<RankModel>().HasKey(r => new { r.idUser, r.idFilm });
             builder.Entity<FriendsModel>().HasKey(f => new { f.idSuiveur, f.idSuivi });
             base.OnModelCreating(builder);

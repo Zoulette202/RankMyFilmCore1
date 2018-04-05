@@ -34,8 +34,8 @@ namespace RankMyFilmCore.Controllers
                                            where ApplicationUser.Id == item.idSuivi
                                            select ApplicationUser).FirstOrDefaultAsync();
 
-                item.pseudoSuiveur = nameUserSuiveur.pseudo;
-                item.pseudoSuivi = nameUserSuivi.pseudo;
+                item.pseudoFollower = nameUserSuiveur.pseudo;
+                item.pseudoFollowed = nameUserSuivi.pseudo;
             }
             return View(listAmitie);
         }
@@ -82,8 +82,8 @@ namespace RankMyFilmCore.Controllers
                                      where ApplicationUser.Id == friendsModel.idSuivi
                                      select ApplicationUser).FirstOrDefaultAsync();
 
-                friendsModel.pseudoSuiveur = pseudoSuiveur.pseudo;
-                friendsModel.pseudoSuivi = pseudoSuivi.pseudo;
+                friendsModel.pseudoFollower = pseudoSuiveur.pseudo;
+                friendsModel.pseudoFollowed = pseudoSuivi.pseudo;
                 _context.Add(friendsModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

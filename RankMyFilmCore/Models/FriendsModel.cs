@@ -21,10 +21,10 @@ namespace RankMyFilmCore
         public string idSuivi { get; set; }
 
         [NotMapped]
-        public string pseudoSuiveur { get; set; }
+        public string pseudoFollower { get; set; }
 
         [NotMapped]
-        public string pseudoSuivi { get; set; }
+        public string pseudoFollowed { get; set; }
 
     }
 }

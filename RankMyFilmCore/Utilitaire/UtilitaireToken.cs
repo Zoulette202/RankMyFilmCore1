@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace RankMyFilmCore.Utilitaire
 {
-    public class UtilitaireToken
+    public class Utilitaire
     {
 
-        public string id { get; set; }
-        public string token { get; set; }
+        public string idUser { get; set; }
+        public string tokenGenerate { get; set; }
     }
 }

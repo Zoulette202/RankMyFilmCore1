@@ -38,8 +38,8 @@ namespace RankMyFilmCore.API
                                     where ApplicationUser.Id == item.idSuivi
                                     select ApplicationUser).FirstOrDefaultAsync();
 
-                item.pseudoSuiveur = pseudoSuiveur.pseudo;
-                item.pseudoSuivi = pseudoSuivi.pseudo;
+                item.pseudoFollower = pseudoSuiveur.pseudo;
+                item.pseudoFollowed = pseudoSuivi.pseudo;
             }
             return Ok(_context.friendsModel);
         }
@@ -68,11 +68,11 @@ namespace RankMyFilmCore.API
         /// idParamMoi représente la personne connecté en params 
         /// Elle te dit si tu suis la personne ou pas
         /// </summary>
-        /// <param name="idMoi"></param>
-        /// <param name="idQuelqun"></param>
+        /// <param name="idCurrent"></param>
+        /// <param name="idParams"></param>
         /// <returns></returns>
-        [HttpGet("getMyFriend/{idMoi}/{idQuelqun}")]
-        public async Task<IActionResult> getJeSuis([FromRoute] string idMoi, [FromRoute] string idQuelqun)
+        [HttpGet("getMyFriend/{idCurrent}/{idParams}")]
+        public async Task<IActionResult> GetMyFriend([FromRoute] string idCurrent, [FromRoute] string idParams)
         {
 
             bool trouver = false;
@@ -82,7 +82,7 @@ namespace RankMyFilmCore.API
             }
 
             var ListfriendModel = await (from friend in _context.friendsModel
-                                         where friend.idSuiveur.ToString() == idMoi && friend.idSuivi.ToString() == idQuelqun
+                                         where friend.idSuiveur.ToString() == idCurrent && friend.idSuivi.ToString() == idParams
                                          select friend).ToListAsync();
 
             if (ListfriendModel == null)
@@ -97,24 +97,19 @@ namespace RankMyFilmCore.API
             return Ok(trouver);
         }
 
-       /* public async Task<IActionResult> unfollow([FromRoute] string idMoi, [FromRoute] string idQuelqun)
-        {
-
-        }*/
-
 
         /// <summary>
         /// Crée un lien d'amitié
         /// </summary>
-        /// <param name="idMoi"></param>
-        /// <param name="idQuelqun"></param>
+        /// <param name="idCurrent"></param>
+        /// <param name="idParams"></param>
         /// <returns></returns>
-        [HttpGet("follow/{idMoi}/{idQuelqun}")]
-        public async Task<IActionResult> createFriends([FromRoute] string idMoi, [FromRoute] string idQuelqun)
+        [HttpGet("follow/{idCurrent}/{idParams}")]
+        public async Task<IActionResult> Follow([FromRoute] string idCurrent, [FromRoute] string idParams)
         {
             if (ModelState.IsValid)
             {
-                var friendsModel = new FriendsModel { ID = new Guid(), idSuiveur = idMoi, idSuivi = idQuelqun };
+                var friendsModel = new FriendsModel { ID = new Guid(), idSuiveur = idCurrent, idSuivi = idParams };
                 var pseudoSuiveur = await (from ApplicationUser in _context.ApplicationUser
                                            where ApplicationUser.Id == friendsModel.idSuiveur
                                            select ApplicationUser).FirstOrDefaultAsync();
@@ -123,8 +118,8 @@ namespace RankMyFilmCore.API
                                          where ApplicationUser.Id == friendsModel.idSuivi
                                          select ApplicationUser).FirstOrDefaultAsync();
 
-                friendsModel.pseudoSuiveur = pseudoSuiveur.pseudo;
-                friendsModel.pseudoSuivi = pseudoSuivi.pseudo;
+                friendsModel.pseudoFollower = pseudoSuiveur.pseudo;
+                friendsModel.pseudoFollowed = pseudoSuivi.pseudo;
                 _context.Add(friendsModel);
                 await _context.SaveChangesAsync();
 
@@ -136,11 +131,11 @@ namespace RankMyFilmCore.API
         }
 
 
-        [HttpGet("unfollow/{idMoi}/{idQuelqun}")]
-        public async Task<IActionResult> unfollow([FromRoute] string idMoi, [FromRoute] string idQuelqun)
+        [HttpGet("unfollow/{idCurrent}/{idParams}")]
+        public async Task<IActionResult> Unfollow([FromRoute] string idCurrent, [FromRoute] string idParams)
         {
             var friendDelete = await (from lienAmitie in _context.friendsModel
-                                      where lienAmitie.idSuiveur == idMoi && lienAmitie.idSuivi == idQuelqun
+                                      where lienAmitie.idSuiveur == idCurrent && lienAmitie.idSuivi == idParams
                                       select lienAmitie).FirstOrDefaultAsync();
             
             try
@@ -162,10 +157,10 @@ namespace RankMyFilmCore.API
         /// Elle te dit si la personne te suis ou pas
         /// </summary>
         /// <param name="idMoi"></param>
-        /// <param name="idQuelqun"></param>
+        /// <param name="idParams"></param>
         /// <returns></returns>
-        [HttpGet("getIlMeSuis/{idMoi}/{idQuelqun}")]
-        public async Task<IActionResult> getIlMeSuis([FromRoute] string idMoi, [FromRoute] string idQuelqun)
+        [HttpGet("getFollowMe/{idCurrent}/{idParams}")]
+        public async Task<IActionResult> GetFollowMe([FromRoute] string idCurrent, [FromRoute] string idParams)
         {
 
             bool trouver = false;
@@ -175,7 +170,7 @@ namespace RankMyFilmCore.API
             }
 
             var listFriendsModel = await (from friend in _context.friendsModel
-                                          where friend.idSuiveur.ToString() == idQuelqun && friend.idSuivi.ToString() == idMoi
+                                          where friend.idSuiveur.ToString() == idParams && friend.idSuivi.ToString() == idCurrent
                                           select friend).ToListAsync();
 
             if (listFriendsModel == null)
@@ -194,10 +189,10 @@ namespace RankMyFilmCore.API
         /// <summary>
         /// Renvoie la liste d'amie de l'utilisateur      
         /// </summary>
-        /// <param name="idMoi"></param>
+        /// <param name="idCurrent"></param>
         /// <returns></returns>
-        [HttpGet("getMyListFriend/{idMoi}")]
-        public async Task<IActionResult> getMyListFriend([FromRoute] string idMoi)
+        [HttpGet("getMyListFriend/{idCurrent}")]
+        public async Task<IActionResult> GetMyListFriend([FromRoute] string idCurrent)
         {
 
 
@@ -207,7 +202,7 @@ namespace RankMyFilmCore.API
             }
 
             var ListfriendModel = await (from friend in _context.friendsModel
-                                         where friend.idSuiveur.ToString() == idMoi
+                                         where friend.idSuiveur.ToString() == idCurrent
                                          select friend).ToListAsync();
 
             if (ListfriendModel == null)
@@ -237,8 +232,8 @@ namespace RankMyFilmCore.API
         }
 
 
-        [HttpGet("getMyListFollow/{idMoi}")]
-        public async Task<IActionResult> getMyListFollow([FromRoute] string idMoi)
+        [HttpGet("getMyListFollow/{idCurrent}")]
+        public async Task<IActionResult> GetMyListFollow([FromRoute] string idCurrent)
         {
 
 
@@ -248,7 +243,7 @@ namespace RankMyFilmCore.API
             }
 
             var ListfriendModel = await (from friend in _context.friendsModel
-                                         where friend.idSuivi.ToString() == idMoi
+                                         where friend.idSuivi.ToString() == idCurrent
                                          select friend).ToListAsync();
 
             if (ListfriendModel == null)
