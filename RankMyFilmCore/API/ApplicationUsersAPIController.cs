@@ -15,10 +15,12 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using RankMyFilmCore.Data;
 using RankMyFilmCore.Models;
 using RankMyFilmCore.Models.AccountViewModels;
+using RankMyFilmCore.Services;
 using RankMyFilmCore.Utilitaire;
 
 namespace RankMyFilmCore.API
@@ -32,13 +34,17 @@ namespace RankMyFilmCore.API
 
         public UserManager<ApplicationUser> UserManager { get; private set; }
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailSender _emailSender;
+      
 
         public IConfiguration _configuration { get; set; }
-        public ApplicationUsersAPIController(ApplicationDbContext context, SignInManager<ApplicationUser>sing, IConfiguration config )
+        public ApplicationUsersAPIController(ApplicationDbContext context, SignInManager<ApplicationUser>sing, IConfiguration config, IEmailSender email )
         {
             _context = context;
             _signInManager = sing;
             _configuration = config;
+            _emailSender = email;
+            
 
         }
 
@@ -150,14 +156,62 @@ namespace RankMyFilmCore.API
         }
 
 
+        [HttpGet("create/{email}/{mdp}/{pseudo}")]
+        public async Task<UtilitaireToken> createUser([FromRoute] string email, [FromRoute]string mdp , [FromRoute] string pseudo )
+        {
+             UtilitaireToken util = new UtilitaireToken();
+           
+
+                var user = new ApplicationUser { Email = email, pseudo = pseudo, UserName= pseudo };
+                var result = await UserManager.CreateAsync(user, mdp);
+                if (result.Succeeded)
+                {
+                    
+
+                    var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                    var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+                    await _emailSender.SendEmailConfirmationAsync(email, callbackUrl);
+
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    
+
+
+                    var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
+            };
+
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                    var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:ExpireDays"]));
+
+                    var token = new JwtSecurityToken(
+                        _configuration["Jwt:Issuer"],
+                        _configuration["Jwt:Issuer"],
+                        claims,
+                        expires: expires,
+                        signingCredentials: creds
+                    );
+
+                    var tok = new JwtSecurityTokenHandler().WriteToken(token);
+                    util.id = user.Id;
+                    util.token = tok;
+                    return util;     
+                }
+            
+
+            return util;
+
+        }
+
 
        [HttpGet("getToken/{email}/{mdp}")]
        public async Task<UtilitaireToken> GenerateJwtToken([FromRoute] string email, [FromRoute] string mdp)
         {
             UtilitaireToken util = new UtilitaireToken();
-
-
-
+            
             var result = await _signInManager.PasswordSignInAsync(email, mdp, false, lockoutOnFailure: false);
 
             
@@ -401,11 +455,11 @@ namespace RankMyFilmCore.API
             return _context.ApplicationUser.Any(e => e.Id == id);
         }
 
-        public void nbRankUser(ApplicationUser user)
+        public async void nbRankUser(ApplicationUser user)
         {
-            var rankUser =  (from rank in _context.rankModel
+            var rankUser =  await (from rank in _context.rankModel
                                   where rank.idUser == user.Id
-                                  select rank).Count();
+                                  select rank).CountAsync();
 
             user.nbRank = rankUser;
         }

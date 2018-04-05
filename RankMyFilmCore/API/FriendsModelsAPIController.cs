@@ -109,7 +109,7 @@ namespace RankMyFilmCore.API
         /// <param name="idMoi"></param>
         /// <param name="idQuelqun"></param>
         /// <returns></returns>
-        [HttpGet("suivre/{idMoi}/{idQuelqun}")]
+        [HttpGet("follow/{idMoi}/{idQuelqun}")]
         public async Task<IActionResult> createFriends([FromRoute] string idMoi, [FromRoute] string idQuelqun)
         {
             if (ModelState.IsValid)
@@ -136,6 +136,27 @@ namespace RankMyFilmCore.API
         }
 
 
+        [HttpGet("unfollow/{idMoi}/{idQuelqun}")]
+        public async Task<IActionResult> unfollow([FromRoute] string idMoi, [FromRoute] string idQuelqun)
+        {
+            var friendDelete = await (from lienAmitie in _context.friendsModel
+                                      where lienAmitie.idSuiveur == idMoi && lienAmitie.idSuivi == idQuelqun
+                                      select lienAmitie).FirstOrDefaultAsync();
+            
+            try
+            {
+                _context.friendsModel.Remove(friendDelete);
+                await _context.SaveChangesAsync();
+                return Ok(true);
+            }
+            catch
+            {
+
+                return Ok(false);
+            }
+            
+            
+        }
 
         /// <summary>        
         /// Elle te dit si la personne te suis ou pas
