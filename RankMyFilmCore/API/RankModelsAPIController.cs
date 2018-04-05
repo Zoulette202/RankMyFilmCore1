@@ -96,8 +96,6 @@ namespace RankMyFilmCore.WebApiRank
 
         }
 
-       
-
         // GET: api/Rank/get/5
         [HttpGet("get/{id}")]
         public async Task<IActionResult> GetRankModelByIdUser([FromRoute] string id)
@@ -149,7 +147,7 @@ namespace RankMyFilmCore.WebApiRank
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RankModelExists(id))
+                if (!rankModelExists(id))
                 {
                     return NotFound();
                 }
@@ -250,7 +248,7 @@ namespace RankMyFilmCore.WebApiRank
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RankModelExists(rankModel.ID))
+                    if (!rankModelExists(rankModel.ID))
                     {
                         return NotFound();
                     }
@@ -338,7 +336,7 @@ namespace RankMyFilmCore.WebApiRank
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RankModelExists(rankModel.ID))
+                    if (!rankModelExists(rankModel.ID))
                     {
                         return NotFound();
                     }
@@ -625,7 +623,7 @@ namespace RankMyFilmCore.WebApiRank
         }
 
 
-        private bool RankModelExists(Guid id)
+        private bool rankModelExists(Guid id)
         {
             return _context.rankModel.Any(e => e.ID == id);
         }

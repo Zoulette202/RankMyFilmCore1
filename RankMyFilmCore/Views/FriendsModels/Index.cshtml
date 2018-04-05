@@ -13,10 +13,10 @@
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.pseudoSuiveur)
+                    @Html.DisplayNameFor(model => model.pseudoFollower)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.pseudoSuivi)
+                    @Html.DisplayNameFor(model => model.pseudoFollowed)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.UpdatedAt)
@@ -34,10 +34,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.pseudoSuiveur)
+                @Html.DisplayFor(modelItem => item.pseudoFollower)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.pseudoSuivi)
+                @Html.DisplayFor(modelItem => item.pseudoFollowed)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UpdatedAt)

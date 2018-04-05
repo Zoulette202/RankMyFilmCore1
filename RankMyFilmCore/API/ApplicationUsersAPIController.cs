@@ -212,22 +212,27 @@ namespace RankMyFilmCore.API
         }
 
 
-        [HttpGet("login/{email}/{password}")]
-        public async Task<Utilitaire.Utilitaire> GenerateJwtToken([FromRoute] string email, [FromRoute] string password)
+        [HttpPost, ActionName("Login")]
+        public async Task<Utilitaire.Utilitaire> Login([FromBody] ModelAuthentification item)
         {
-            Utilitaire.Utilitaire util = new Utilitaire.Utilitaire();
 
-            var result = await _signInManager.PasswordSignInAsync(email, password, false, lockoutOnFailure: false);
+            
+            Utilitaire.Utilitaire util = new Utilitaire.Utilitaire();
+            if (item.userEmail == null && item.userPassword == null)
+            {
+                return util;
+            }
+            var result = await _signInManager.PasswordSignInAsync(item.userEmail, item.userPassword, false, lockoutOnFailure: false);
 
 
             if (result.Succeeded)
             {
                 var user = await (from u in _context.ApplicationUser
-                                  where u.Email == email
+                                  where u.Email == item.userEmail
                                   select u).FirstOrDefaultAsync();
                 var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, email),
+                new Claim(JwtRegisteredClaimNames.Sub, item.userEmail),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
