@@ -32,16 +32,19 @@ namespace RankMyFilmCore.API
     {
         private readonly ApplicationDbContext _context;
 
-        public UserManager<ApplicationUser> UserManager { get; private set; }
+        public readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
-      
+        
+        private readonly ILogger _logger;
+
 
         public IConfiguration _configuration { get; set; }
-        public ApplicationUsersAPIController(ApplicationDbContext context, SignInManager<ApplicationUser>sing, IConfiguration config, IEmailSender email )
+        public ApplicationUsersAPIController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser>signManager, IConfiguration config, IEmailSender email )
         {
             _context = context;
-            _signInManager = sing;
+            _userManager = userManager;
+            _signInManager = signManager;
             _configuration = config;
             _emailSender = email;
             
@@ -162,13 +165,13 @@ namespace RankMyFilmCore.API
              UtilitaireToken util = new UtilitaireToken();
            
 
-                var user = new ApplicationUser { Email = email, pseudo = pseudo, UserName= pseudo };
-                var result = await UserManager.CreateAsync(user, mdp);
+                var user = new ApplicationUser { UserName = email, Email = email, pseudo = pseudo };
+                var result = await _userManager.CreateAsync(user, mdp);
                 if (result.Succeeded)
                 {
                     
 
-                    var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(email, callbackUrl);
 
@@ -207,7 +210,7 @@ namespace RankMyFilmCore.API
         }
 
 
-       [HttpGet("getToken/{email}/{mdp}")]
+       [HttpGet("login/{email}/{mdp}")]
        public async Task<UtilitaireToken> GenerateJwtToken([FromRoute] string email, [FromRoute] string mdp)
         {
             UtilitaireToken util = new UtilitaireToken();
