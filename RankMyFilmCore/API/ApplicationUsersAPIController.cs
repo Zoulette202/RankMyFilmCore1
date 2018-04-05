@@ -161,21 +161,24 @@ namespace RankMyFilmCore.API
         }
 
 
-        [HttpGet("create/{email}/{password}/{pseudo}")]
-        public async Task<Utilitaire.Utilitaire> CreateUser([FromRoute] string email, [FromRoute]string password, [FromRoute] string pseudo)
+        [HttpPost("create")]
+        public async Task<Utilitaire.Utilitaire> CreateUser([FromBody] ModelCreateUser userParam)
         {
             Utilitaire.Utilitaire util = new Utilitaire.Utilitaire();
+            if (userParam.userEmail == null && userParam.userPassword == null && userParam.userPseudo == null)
+            {
+                return util;
+            }
 
-
-            var user = new ApplicationUser { UserName = email, Email = email, pseudo = pseudo };
-            var result = await _userManager.CreateAsync(user, password);
+            var user = new ApplicationUser { UserName = userParam.userEmail, Email = userParam.userEmail, pseudo = userParam.userPseudo };
+            var result = await _userManager.CreateAsync(user, userParam.userPassword);
             if (result.Succeeded)
             {
 
 
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-                await _emailSender.SendEmailConfirmationAsync(email, callbackUrl);
+                await _emailSender.SendEmailConfirmationAsync(userParam.userEmail, callbackUrl);
 
                 await _signInManager.SignInAsync(user, isPersistent: false);
 
@@ -183,7 +186,7 @@ namespace RankMyFilmCore.API
 
                 var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, email),
+                new Claim(JwtRegisteredClaimNames.Sub, userParam.userEmail),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
@@ -212,27 +215,27 @@ namespace RankMyFilmCore.API
         }
 
 
-        [HttpPost, ActionName("Login")]
-        public async Task<Utilitaire.Utilitaire> Login([FromBody] ModelAuthentification item)
+        [HttpPost("login")]
+        public async Task<Utilitaire.Utilitaire> Login([FromBody] ModelAuthentification userParam)
         {
 
             
             Utilitaire.Utilitaire util = new Utilitaire.Utilitaire();
-            if (item.userEmail == null && item.userPassword == null)
+            if (userParam.userEmail == null && userParam.userPassword == null)
             {
                 return util;
             }
-            var result = await _signInManager.PasswordSignInAsync(item.userEmail, item.userPassword, false, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(userParam.userEmail, userParam.userPassword, false, lockoutOnFailure: false);
 
 
             if (result.Succeeded)
             {
                 var user = await (from u in _context.ApplicationUser
-                                  where u.Email == item.userEmail
+                                  where u.Email == userParam.userEmail
                                   select u).FirstOrDefaultAsync();
                 var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, item.userEmail),
+                new Claim(JwtRegisteredClaimNames.Sub, userParam.userEmail),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
