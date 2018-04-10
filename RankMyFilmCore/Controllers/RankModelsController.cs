@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using RankMyFilmCore.Data;
 
 namespace RankMyFilmCore.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class RankModelsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,19 +25,6 @@ namespace RankMyFilmCore.Controllers
         public async Task<IActionResult> Index()
         {
             var listeRank = await _context.rankModel.ToListAsync();
-            foreach(var item in listeRank)
-            {
-                var pseudoUser = await (from ApplicationUser in _context.ApplicationUser
-                                         where ApplicationUser.Id == item.idUser
-                                         select ApplicationUser).FirstOrDefaultAsync();
-                if(pseudoUser != null)
-                {
-                    item.pseudo = pseudoUser.pseudo;
-                }
-                
-            }
-           
-            
             return View(listeRank);
         }
 

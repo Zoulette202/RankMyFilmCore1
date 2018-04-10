@@ -28,6 +28,7 @@ namespace RankMyFilmCore.API
     [Produces("application/json")]
     [Route("api/User")]
     [EnableCors("CorsPolicy")]
+    
     public class ApplicationUsersAPIController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -35,6 +36,7 @@ namespace RankMyFilmCore.API
         public readonly UserManager<ApplicationUser> _userManager;
         public readonly SignInManager<ApplicationUser> _signInManager;
         public readonly IEmailSender _emailSender;
+        public readonly RoleManager<IdentityRole> _roleManager;
 
 
         public readonly IConfiguration _configuration;
@@ -42,15 +44,17 @@ namespace RankMyFilmCore.API
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signManager,
             IConfiguration config,
-            IEmailSender email)
+            IEmailSender email,
+            RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signManager;
             _configuration = config;
             _emailSender = email;
+            _roleManager = roleManager;
 
-
+            
         }
 
         // GET: api/user
@@ -170,8 +174,23 @@ namespace RankMyFilmCore.API
                 return util;
             }
 
-            var user = new ApplicationUser { UserName = userParam.userEmail, Email = userParam.userEmail, pseudo = userParam.userPseudo };
+            var user = new ApplicationUser { UserName = userParam.userEmail, Email = userParam.userEmail, pseudo = userParam.userPseudo, EmailConfirmed=true};
             var result = await _userManager.CreateAsync(user, userParam.userPassword);
+            bool x = await _roleManager.RoleExistsAsync("User");
+            if (!x)
+            {
+                var role = new IdentityRole();
+                role.Name = "User";
+                await _roleManager.CreateAsync(role);
+                var result1 = await _userManager.AddToRoleAsync(user, "User");
+
+            }else
+            {
+               await _userManager.AddToRoleAsync(user, "User");
+            }
+
+            
+
             if (result.Succeeded)
             {
 
@@ -476,5 +495,10 @@ namespace RankMyFilmCore.API
 
             user.nbRank = rankUser;
         }
+
+
+
+
+
     }
 }

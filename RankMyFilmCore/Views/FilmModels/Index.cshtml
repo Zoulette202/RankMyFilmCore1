@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RankMyFilmCore.RankModel>
+﻿@model IEnumerable<RankMyFilmCore.Models.FilmModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,19 +13,19 @@
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.idUser)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.idFilm)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Vote)
+                    @Html.DisplayNameFor(model => model.title)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.vu)
+                    @Html.DisplayNameFor(model => model.poster)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Commentaire)
+                    @Html.DisplayNameFor(model => model.moyenne)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.nbRank)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.UpdatedAt)
@@ -43,19 +43,19 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.idUser)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.idFilm)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Vote)
+                @Html.DisplayFor(modelItem => item.title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.vu)
+                @Html.DisplayFor(modelItem => item.poster)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Commentaire)
+                @Html.DisplayFor(modelItem => item.moyenne)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.nbRank)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UpdatedAt)

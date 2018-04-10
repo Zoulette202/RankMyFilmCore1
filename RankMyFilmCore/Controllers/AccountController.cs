@@ -16,7 +16,7 @@ using RankMyFilmCore.Services;
 
 namespace RankMyFilmCore.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
@@ -24,18 +24,21 @@ namespace RankMyFilmCore.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
+        public readonly RoleManager<IdentityRole> _roleManager;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
-            ILogger<AccountController> logger
+            ILogger<AccountController> logger,
+            RoleManager<IdentityRole> roleManager
             )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
+            _roleManager = roleManager;
         }
 
         [TempData]
@@ -221,7 +224,21 @@ namespace RankMyFilmCore.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, pseudo = model.pseudo };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, pseudo = model.pseudo, EmailConfirmed=true };
+
+                bool x = await _roleManager.RoleExistsAsync("User");
+                if (!x)
+                {
+                    var role = new IdentityRole();
+                    role.Name = "User";
+                    await _roleManager.CreateAsync(role);
+                    var result1 = await _userManager.AddToRoleAsync(user, "User");
+
+                }
+                else
+                {
+                    var result2 = await _userManager.AddToRoleAsync(user, "User");
+                }
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

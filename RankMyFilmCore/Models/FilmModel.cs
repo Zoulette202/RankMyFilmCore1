@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-
-namespace RankMyFilmCore
+namespace RankMyFilmCore.Models
 {
     public class FilmModel : ModelBase
     {
-        [Display(Name = "title")]
-        [Required(ErrorMessageResourceName = "required_name")]
-        [StringLength(50, ErrorMessage = "Le titre doit contenir {1} caractères maximum.")]
-        public string Title { get; set; }
+
+        public string idFilm { get; set; }
+
+        public string title {get; set;}
+
+        public string poster { get; set; }
+
+        public double moyenne { get; set; }
+
+        public int nbRank { get; set; }
     }
 }

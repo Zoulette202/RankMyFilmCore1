@@ -11,87 +11,87 @@ using RankMyFilmCore.Models;
 
 namespace RankMyFilmCore.Controllers
 {
-    [Authorize(Roles ="Admin")]
-    public class ApplicationUsersController : Controller
+    [Authorize(Roles = "Admin")]
+    public class FilmModelsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ApplicationUsersController(ApplicationDbContext context)
+        public FilmModelsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        
-        // GET: ApplicationUsers
+        // GET: FilmModels
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ApplicationUser.ToListAsync());
+            return View(await _context.filmModel.ToListAsync());
         }
 
-        // GET: ApplicationUsers/Details/5
-        public async Task<IActionResult> Details(string id)
+        // GET: FilmModels/Details/5
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var applicationUser = await _context.ApplicationUser
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (applicationUser == null)
+            var filmModel = await _context.filmModel
+                .SingleOrDefaultAsync(m => m.ID == id);
+            if (filmModel == null)
             {
                 return NotFound();
             }
 
-            return View(applicationUser);
+            return View(filmModel);
         }
 
-        // GET: ApplicationUsers/Create
+        // GET: FilmModels/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: ApplicationUsers/Create
+        // POST: FilmModels/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("pseudo,urlImage,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] ApplicationUser applicationUser)
+        public async Task<IActionResult> Create([Bind("idFilm,title,poster,moyenne,nbRank,ID,UpdatedAt,DeletedAt,Deleted")] FilmModel filmModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(applicationUser);
+                filmModel.ID = Guid.NewGuid();
+                _context.Add(filmModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(applicationUser);
+            return View(filmModel);
         }
 
-        // GET: ApplicationUsers/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        // GET: FilmModels/Edit/5
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var applicationUser = await _context.ApplicationUser.SingleOrDefaultAsync(m => m.Id == id);
-            if (applicationUser == null)
+            var filmModel = await _context.filmModel.SingleOrDefaultAsync(m => m.ID == id);
+            if (filmModel == null)
             {
                 return NotFound();
             }
-            return View(applicationUser);
+            return View(filmModel);
         }
 
-        // POST: ApplicationUsers/Edit/5
+        // POST: FilmModels/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("pseudo,urlImage,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] ApplicationUser applicationUser)
+        public async Task<IActionResult> Edit(Guid id, [Bind("idFilm,title,poster,moyenne,nbRank,ID,UpdatedAt,DeletedAt,Deleted")] FilmModel filmModel)
         {
-            if (id != applicationUser.Id)
+            if (id != filmModel.ID)
             {
                 return NotFound();
             }
@@ -100,12 +100,12 @@ namespace RankMyFilmCore.Controllers
             {
                 try
                 {
-                    _context.Update(applicationUser);
+                    _context.Update(filmModel);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ApplicationUserExists(applicationUser.Id))
+                    if (!FilmModelExists(filmModel.ID))
                     {
                         return NotFound();
                     }
@@ -116,41 +116,41 @@ namespace RankMyFilmCore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(applicationUser);
+            return View(filmModel);
         }
 
-        // GET: ApplicationUsers/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        // GET: FilmModels/Delete/5
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var applicationUser = await _context.ApplicationUser
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (applicationUser == null)
+            var filmModel = await _context.filmModel
+                .SingleOrDefaultAsync(m => m.ID == id);
+            if (filmModel == null)
             {
                 return NotFound();
             }
 
-            return View(applicationUser);
+            return View(filmModel);
         }
 
-        // POST: ApplicationUsers/Delete/5
+        // POST: FilmModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var applicationUser = await _context.ApplicationUser.SingleOrDefaultAsync(m => m.Id == id);
-            _context.ApplicationUser.Remove(applicationUser);
+            var filmModel = await _context.filmModel.SingleOrDefaultAsync(m => m.ID == id);
+            _context.filmModel.Remove(filmModel);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ApplicationUserExists(string id)
+        private bool FilmModelExists(Guid id)
         {
-            return _context.ApplicationUser.Any(e => e.Id == id);
+            return _context.filmModel.Any(e => e.ID == id);
         }
     }
 }

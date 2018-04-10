@@ -1,0 +1,65 @@
+﻿@model RankMyFilmCore.Models.FilmModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>FilmModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="idFilm" class="control-label"></label>
+                <input asp-for="idFilm" class="form-control" />
+                <span asp-validation-for="idFilm" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="title" class="control-label"></label>
+                <input asp-for="title" class="form-control" />
+                <span asp-validation-for="title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="poster" class="control-label"></label>
+                <input asp-for="poster" class="form-control" />
+                <span asp-validation-for="poster" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="moyenne" class="control-label"></label>
+                <input asp-for="moyenne" class="form-control" />
+                <span asp-validation-for="moyenne" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="nbRank" class="control-label"></label>
+                <input asp-for="nbRank" class="form-control" />
+                <span asp-validation-for="nbRank" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DeletedAt" class="control-label"></label>
+                <input asp-for="DeletedAt" class="form-control" />
+                <span asp-validation-for="DeletedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Deleted" /> @Html.DisplayNameFor(model => model.Deleted)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

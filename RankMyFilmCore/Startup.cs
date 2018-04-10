@@ -20,6 +20,7 @@ namespace RankMyFilmCore
 {
     public class Startup
     {
+       
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -47,7 +48,7 @@ namespace RankMyFilmCore
                 .AllowCredentials());
             });
 
-            services.Configure<IdentityOptions>(options =>
+            services.Configure<IdentityOptions>( options =>
             {
                 // Password settings
                 options.Password.RequireDigit = true;
@@ -90,6 +91,8 @@ namespace RankMyFilmCore
                     };
                     });
 
+                
+
             });
 
             
@@ -111,6 +114,13 @@ namespace RankMyFilmCore
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
+            
+           /* var bu = services.BuildServiceProvider();
+            ApplicationDbContext appdbcont = bu.GetService<ApplicationDbContext>();
+            UserManager<ApplicationUser> usermanag = bu.GetService<UserManager<ApplicationUser>>();
+            RoleManager<IdentityRole> rolemanag = bu.GetService<RoleManager < IdentityRole >> ();
+            var d = new CreateAdmin(appdbcont, usermanag, rolemanag);
+            Task ok=d.create();*/
 
         }
 
@@ -131,7 +141,7 @@ namespace RankMyFilmCore
             app.UseCors("CorsPolicy");
             app.UseStaticFiles();
 
-
+            
             //J'ai add ça pour l'authentification avec Identity
             app.UseAuthentication();
 
@@ -141,6 +151,8 @@ namespace RankMyFilmCore
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+
         }
     }
 }

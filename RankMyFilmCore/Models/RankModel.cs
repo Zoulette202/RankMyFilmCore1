@@ -28,14 +28,7 @@ namespace RankMyFilmCore
 
         [Display(Name = "Déjà vu")]
         public bool vu { get; set; }
-
-        [Display(Name = "Poster")]
-        public string poster { get; set; }
-
-
-        [Display(Name = "Title")]
-        public string Title { get; set; }
-
+        
 
         public DateTime dateCréation { get; set; }
 
@@ -43,13 +36,19 @@ namespace RankMyFilmCore
         [StringLength(255)]
         public string Commentaire { get; set; }
 
+
+        [NotMapped]
+        public string poster { get; set; }
+
+
+        [NotMapped]
+        public string title { get; set; }
+
+
         [NotMapped]
         public double moyenneByFriend { get; set; }
 
         [NotMapped]
         public double moyenneByAllUser { get; set; }
-
-        [NotMapped]
-        public string pseudo { get; set; }
     }
 }

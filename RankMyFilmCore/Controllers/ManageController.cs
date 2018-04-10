@@ -16,7 +16,7 @@ using RankMyFilmCore.Services;
 
 namespace RankMyFilmCore.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [Route("[controller]/[action]")]
     public class ManageController : Controller
     {

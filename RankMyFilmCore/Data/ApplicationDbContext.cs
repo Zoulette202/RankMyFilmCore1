@@ -15,8 +15,9 @@ namespace RankMyFilmCore.Data
             : base(options)
         {
         }
-        public virtual DbSet<UserModel> userModel { get; set; }
+       
         public virtual DbSet<FriendsModel> friendsModel { get; set; }
+      
         public virtual DbSet<FilmModel> filmModel { get; set; }
 
         public virtual DbSet<RankModel> rankModel { get; set; }

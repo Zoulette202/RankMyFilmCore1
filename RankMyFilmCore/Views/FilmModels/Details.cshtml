@@ -1,0 +1,66 @@
+﻿@model RankMyFilmCore.Models.FilmModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>FilmModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.idFilm)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.idFilm)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.poster)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.poster)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.moyenne)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.moyenne)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.nbRank)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.nbRank)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdatedAt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UpdatedAt)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DeletedAt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DeletedAt)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Deleted)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Deleted)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
