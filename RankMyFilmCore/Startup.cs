@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+//using static RankMyFilmCore.Services.testLogin;
+
 
 namespace RankMyFilmCore
 {
@@ -33,6 +35,11 @@ namespace RankMyFilmCore
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+
+            //services.AddScoped<ITestLogin, testLogin>();
+
+
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -66,36 +73,38 @@ namespace RankMyFilmCore
                 // User settings
                 options.User.RequireUniqueEmail = true;
 
-              
 
-                // ===== Add Jwt Authentication ========
-                JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // => remove default claims
-                services
-                    .AddAuthentication(jwtBearerOptions =>
-                    {
-                        jwtBearerOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                        jwtBearerOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                        jwtBearerOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-                    })
-                    .AddJwtBearer(cfg =>
-                    {
-                        cfg.RequireHttpsMetadata = false;
-                        cfg.SaveToken = true;
-                        cfg.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidIssuer = Configuration["Jwt:Issuer"],
-                            ValidAudience = Configuration["Jwt:Issuer"],
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
-                            ClockSkew = TimeSpan.Zero // remove delay of tokenGenerate when expire
-                    };
-                    });
-
-                
-
+               
             });
 
-            
+            // ===== Add Jwt Authentication ========
+            /*JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // => remove default claims
+            services.AddAuthentication(jwtBearerOptions =>
+            {
+                jwtBearerOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                jwtBearerOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                jwtBearerOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(cfg =>
+            {
+                cfg.RequireHttpsMetadata = false;
+                cfg.SaveToken = true;
+                cfg.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                    ClockSkew = TimeSpan.Zero // remove delay of tokenGenerate when expire
+                };
+            });*/
+
+
+
+
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
@@ -110,12 +119,16 @@ namespace RankMyFilmCore
                 options.SlidingExpiration = true;
             });
 
+
+
+
+
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
             
-           /* var bu = services.BuildServiceProvider();
+            /*var bu = services.BuildServiceProvider();
             ApplicationDbContext appdbcont = bu.GetService<ApplicationDbContext>();
             UserManager<ApplicationUser> usermanag = bu.GetService<UserManager<ApplicationUser>>();
             RoleManager<IdentityRole> rolemanag = bu.GetService<RoleManager < IdentityRole >> ();

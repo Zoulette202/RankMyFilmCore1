@@ -78,12 +78,14 @@ namespace RankMyFilmCore.Services
                 var role = new IdentityRole();
                 role.Name = "Admin";
                 await _roleManager.CreateAsync(role);
+                
                 var result1 = await _userManager.AddToRoleAsync(user, "Admin");
-
+                await _context.SaveChangesAsync();
             }
             else
             {
                 await _userManager.AddToRoleAsync(user, "Admin");
+                await _context.SaveChangesAsync();
             }
 
         }

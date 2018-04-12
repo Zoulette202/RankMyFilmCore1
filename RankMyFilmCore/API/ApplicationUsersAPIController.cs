@@ -31,12 +31,13 @@ namespace RankMyFilmCore.API
     
     public class ApplicationUsersAPIController : Controller
     {
-        private readonly ApplicationDbContext _context;
 
+        public readonly ApplicationDbContext _context;
         public readonly UserManager<ApplicationUser> _userManager;
         public readonly SignInManager<ApplicationUser> _signInManager;
         public readonly IEmailSender _emailSender;
         public readonly RoleManager<IdentityRole> _roleManager;
+       
 
 
         public readonly IConfiguration _configuration;

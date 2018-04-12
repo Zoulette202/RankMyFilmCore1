@@ -37,15 +37,17 @@
             <div class="navbar-collapse collapse">
                 @if (SignInManager.IsSignedIn(User))
             {
-                    <ul class="nav navbar-nav">
-                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                <ul class="nav navbar-nav">
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
 
-                        <li><a asp-area="" asp-controller="ApplicationUsers" asp-action="Index">Users</a></li>
-                        <li><a asp-area="" asp-controller="FriendsModels" asp-action="Index">Amitiés</a></li>
-                        <li><a asp-area="" asp-controller="RankModels" asp-action="Index">Users</a></li>
-                    </ul>
+                    <li><a asp-area="" asp-controller="ApplicationUsers" asp-action="Index">Users</a></li>
+                    <li><a asp-area="" asp-controller="FriendsModels" asp-action="Index">Amitiés</a></li>
+                    <li><a asp-area="" asp-controller="RankModels" asp-action="Index">Votes</a></li>
+                    <li><a asp-area="" asp-controller="FilmModels" asp-action="Index">Films</a></li>
+
+                </ul>
         }
         else
         {

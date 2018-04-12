@@ -142,11 +142,11 @@ namespace RankMyFilmCore.WebApiRank
         }
 
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpGet("createRank/{idUser}/{idFilms}/{ranksParam}")]
+        [Authorize]
+        [HttpGet("nbFilm")]
         public async Task<IActionResult> PostRankModelByIdUserIdFilm(string idUser, string idFilms, int ranksParam)
         {
-            return Ok("ca marche");
+            return Ok(_context.rankModel.Count());
         }
 
 
@@ -244,10 +244,15 @@ namespace RankMyFilmCore.WebApiRank
                     rankModel.moyenneByFriend = moyenneFreinds;
                     rankModel.Vote = ranksParam;
 
-                    film.moyenne = (film.moyenne + ranksParam) / (film.nbRank + 1);
-                    _context.filmModel.Update(film);
-                    _context.Entry(rankModel).State = EntityState.Modified;
+                    double d= (film.moyenne + ranksParam);
+                    double v = d / film.nbRank ;
+
+                    film.moyenne = v;
+                    rankModel.moyenneByAllUser = v;
                     await _context.SaveChangesAsync();
+                    _context.filmModel.Update(film);
+                    await _context.SaveChangesAsync();
+                    
                     return Ok(rankModel);
                 }
             }
@@ -390,7 +395,9 @@ namespace RankMyFilmCore.WebApiRank
                 return Ok(rankModelVide);
             } 
             var film = _context.filmModel.Where(f => f.idFilm == rankModel.idFilm).FirstOrDefault();
-
+            if(film == null){
+                return Ok(rankModel);
+            }
             rankModel.moyenneByAllUser = film.moyenne;
             rankModel.poster = film.poster;
             rankModel.title = film.title;
@@ -399,14 +406,20 @@ namespace RankMyFilmCore.WebApiRank
                              where friend.idSuiveur == idUser
                              select friend;
 
-            var notesAllUsers = _context.rankModel.Where(x => x.idFilm == idFilms);
+            var notesAllUsers = _context.rankModel.Where(x => x.idFilm == idFilms).ToList();
+            if (notesAllUsers.Count() > 0 && ListFriend.Count() > 0)
+            {
+                var moyenneFriends = (from r in notesAllUsers
+                                      join f in ListFriend on r.idUser equals f.idSuivi
+                                      select r).Average(x => x.Vote);
 
-            var moyenneFriends = (from r in notesAllUsers
-                                  join f in ListFriend on r.idUser equals f.idSuivi
-                                  select r).Average(x => x.Vote);
-
-            rankModel.moyenneByFriend = moyenneFriends;
+                rankModel.moyenneByFriend = moyenneFriends;
+                return Ok(rankModel);
+            } 
+            rankModel.moyenneByFriend = 0;
             return Ok(rankModel);
+           
+            
         }
 
 

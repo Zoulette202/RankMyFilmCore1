@@ -16,7 +16,7 @@ using RankMyFilmCore.Services;
 
 namespace RankMyFilmCore.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
@@ -226,18 +226,18 @@ namespace RankMyFilmCore.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, pseudo = model.pseudo, EmailConfirmed=true };
 
-                bool x = await _roleManager.RoleExistsAsync("User");
+                bool x = await _roleManager.RoleExistsAsync("Admin");
                 if (!x)
                 {
                     var role = new IdentityRole();
-                    role.Name = "User";
+                    role.Name = "Admin";
                     await _roleManager.CreateAsync(role);
-                    var result1 = await _userManager.AddToRoleAsync(user, "User");
+                    var result1 = await _userManager.AddToRoleAsync(user, "Admin");
 
                 }
                 else
                 {
-                    var result2 = await _userManager.AddToRoleAsync(user, "User");
+                    var result2 = await _userManager.AddToRoleAsync(user, "Admin");
                 }
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
